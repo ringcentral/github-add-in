@@ -46,34 +46,8 @@ cp .env.sample .env
 
 # run local dev server
 npm start
+
+# run client in another terminal
+npm run c
 ```
 
-Then the team will get timestamp message every minute.
-
-Check [example-configs/interval-send-time.js](example-configs/interval-send-time.js) to see the code, it is pretty simple.
-
-### Test source server
-
-Visit `https://xxxx.ap.ngrok.io/send-msg?msg=xxx` to test it
-
-## Build
-
-```bash
-npm run build
-```
-
-## Run production code
-
-```bash
-npx glip-integration-js dist/server/index.js
-```
-
-## Build and deploy to AWS Lambda
-
-[https://github.com/ringcentral/glip-integration-js/blob/master/docs/deploy-to-lambda.md](https://github.com/ringcentral/glip-integration-js/blob/master/docs/deploy-to-lambda.md)
-
-## License
-
-MIT
-
-  
