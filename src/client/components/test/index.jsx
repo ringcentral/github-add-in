@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from 'antd'
-import { PostMessageManager } from '../../external/rc-postmessage/dist/RcPostMessage.es5'
+import { PostMessageManager } from '../../external/rc-postmessage'
 import './test.styl'
 import { MESSAGE_CHANNEL } from '../../common/constants'
 
