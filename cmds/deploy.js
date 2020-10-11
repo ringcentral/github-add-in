@@ -60,7 +60,7 @@ async function run () {
   log(`RINGCENTRAL_APP_SERVER in api gate way: ${urlReal}`)
   if (urlReal !== url) {
     log('modify RINGCENTRAL_APP_SERVER in deploy/.env.yml')
-    yml.RINGCENTRAL_ENGAGE_SOURCE_SERVER = urlReal
+    yml.RINGCENTRAL_APP_SERVER = urlReal
     let newYml = yaml.safeDump(yml)
     writeFileSync(file, newYml)
     run()
