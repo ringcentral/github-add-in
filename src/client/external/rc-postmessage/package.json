@@ -1,34 +1,42 @@
 {
-  "_from": "git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#master",
-  "_id": "RcPostMessage@1.0.0",
-  "_inBundle": false,
-  "_integrity": "",
-  "_location": "/rc-postmessage",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "git",
-    "raw": "rc-postmessage@git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#master",
-    "name": "rc-postmessage",
-    "escapedName": "rc-postmessage",
-    "rawSpec": "git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#master",
-    "saveSpec": "git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#master",
-    "fetchSpec": "git@git.ringcentral.com:lib/rc-postmessage.git",
-    "gitCommittish": "master"
-  },
-  "_requiredBy": [
-    "#DEV:/"
+  "name": "RcPostMessage",
+  "version": "1.0.0",
+  "description": "Rc postMessage SDK.",
+  "keywords": ["postMessage"],
+  "main": "dist/RcPostMessage.umd.js",
+  "module": "dist/RcPostMessage.es5.js",
+  "typings": "dist/types/types.d.ts",
+  "files": [
+    "dist"
   ],
-  "_resolved": "git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#2f1af88cbb2d80bc8f50f1b66e7d5404579bc313",
-  "_spec": "rc-postmessage@git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#master",
-  "_where": "/Users/drake.zhao/dev/glip-integration-github",
-  "author": {
-    "name": "spike.yang",
-    "email": "spike.yang@ringcentral.com"
+  "author": "spike.yang <spike.yang@ringcentral.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://git.ringcentral.com/Fiji/rc-postmessage"
   },
-  "bundleDependencies": false,
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src && npm run generateTypes",
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz",
+    "precommit": "lint-staged",
+    "travis-deploy-once": "travis-deploy-once",
+    "generateTypes": "node generateTypes.js"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write",
+      "git add"
     ]
   },
   "config": {
@@ -36,8 +44,47 @@
       "path": "node_modules/cz-conventional-changelog"
     }
   },
-  "deprecated": false,
-  "description": "Rc postMessage SDK.",
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 75,
+        "lines": 85,
+        "functions": 75,
+        "statements": 80
+      }
+    },
+    "collectCoverageFrom": [
+      "src/*.{js,ts}",
+      "!src/{index,utils}.ts"
+    ],
+    "globals": {
+      "window": {},
+      "MessageChannel": {}
+    }
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
@@ -72,81 +119,5 @@
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.12.0",
     "typescript": "^3.0.3"
-  },
-  "engines": {
-    "node": ">=6.0.0"
-  },
-  "files": [
-    "dist"
-  ],
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 75,
-        "lines": 85,
-        "functions": 75,
-        "statements": 80
-      }
-    },
-    "collectCoverageFrom": [
-      "src/*.{js,ts}",
-      "!src/{index,utils}.ts"
-    ],
-    "globals": {
-      "window": {},
-      "MessageChannel": {}
-    }
-  },
-  "keywords": [
-    "postMessage"
-  ],
-  "license": "MIT",
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "main": "dist/RcPostMessage.umd.js",
-  "module": "dist/RcPostMessage.es5.js",
-  "name": "RcPostMessage",
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://git.ringcentral.com/Fiji/rc-postmessage"
-  },
-  "scripts": {
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src && npm run generateTypes",
-    "commit": "git-cz",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "generateTypes": "node generateTypes.js",
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "precommit": "lint-staged",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
-    "test:prod": "npm run lint && npm run test -- --no-cache",
-    "test:watch": "jest --coverage --watch",
-    "travis-deploy-once": "travis-deploy-once"
-  },
-  "typings": "dist/types/types.d.ts",
-  "version": "1.0.0"
+  }
 }
