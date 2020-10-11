@@ -24,7 +24,7 @@ export default (view) => {
     const query = req.query.webhook
       ? req.query
       : {
-        webhook: process.env.STATIC_WEBHOOK
+        webhook: process.env.STATIC_WEBHOOK || ''
       }
     const data = {
       version: pack.version,
