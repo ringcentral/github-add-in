@@ -38,13 +38,13 @@ export default function Test () {
     <div className='main'>
       <div className='iframe-box'>
         <iframe
-          src={window.rc.server + '/options?webhook=' + window.rc.query.webhook}
+          src={window.rc.server + window.rc.home + '?webhook=' + window.rc.query.webhook}
           id='iframe'
         />
       </div>
       <div className='btns pd2'>
         <Button
-          disabled={canSubmit}
+          disabled={!canSubmit}
           onClick={submit}
         >
           Submit

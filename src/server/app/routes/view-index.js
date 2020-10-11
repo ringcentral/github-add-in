@@ -6,7 +6,7 @@ import copy from 'json-deep-copy'
 import { pack, jwtPrefix, authUrlDefault, defaultState } from '../common/constants'
 
 const {
-  RINGCENTRAL_APP_SERVER, CDN
+  RINGCENTRAL_APP_SERVER, CDN, APP_HOME
 } = process.env
 
 export default (view) => {
@@ -33,6 +33,7 @@ export default (view) => {
       cdn: CDN || RINGCENTRAL_APP_SERVER,
       jwtPrefix,
       defaultState,
+      home: APP_HOME,
       authUrlDefault,
       query: query
     }
