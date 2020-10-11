@@ -51,3 +51,6 @@ npm start
 npm run c
 ```
 
+## production test
+
+url: https://zz9zajn5ok.execute-api.us-east-1.amazonaws.com/prod/app?webhook=https://hooks.glip.com/webhook/v2/162a1793-5c73-49b7-b88e-28d88617a14a

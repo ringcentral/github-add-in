@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "ngrok": "ngrok http -region ap 6066",
-    "start": "node -r @babel/register -r dotenv/config ./src/server/server.js",
+    "start": "node -r @babel/register -r dotenv/config ./src/server/run-server.js",
     "deploy": "npm run build-lambda && npm run deploy-lambda",
     "fix": "./node_modules/.bin/standard --fix",
     "compile": "babel src/server --out-dir dist/server",
