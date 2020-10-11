@@ -17,8 +17,7 @@ export default function Repos (props) {
     const {
       id,
       full_name: name,
-      description,
-      avatar_url: url
+      description
     } = repo
     return (
       <div
@@ -27,13 +26,12 @@ export default function Repos (props) {
         title={description || name}
         onClick={() => props.onClick(repo)}
       >
-        <img src={url} className='avatar' />
         <span className='iblock mg1l bold'>{name}</span>
       </div>
     )
   }
   const arr = keyword
-    ? props.repos.filter.filter(f => f.full_name.toLowerCase().includes(keyword.toLowerCase()))
+    ? props.repos.filter(f => f.full_name.toLowerCase().includes(keyword.toLowerCase()))
     : props.repos
   return (
     <div className='repos'>
@@ -46,7 +44,7 @@ export default function Repos (props) {
             <ReloadOutlined
               className='reload-icon'
               title='reload'
-              onClick={props.onReload}
+              onClick={() => props.onReload()}
             />
           )}
         />

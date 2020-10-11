@@ -25,7 +25,8 @@ const config = {
   mode: 'development',
   entry: {
     install: './src/client/install.js',
-    options: './src/client/options.js'
+    options: './src/client/options.js',
+    test: './src/client/test.js'
   },
   externals: {
     react: 'React',
@@ -40,6 +41,9 @@ const config = {
     publicPath: '/',
     chunkFilename: 'js/[name].bundle.js',
     libraryTarget: 'var'
+  },
+  optimization: {
+    minimize: true
   },
   module: {
     rules: [

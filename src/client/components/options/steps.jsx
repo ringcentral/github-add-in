@@ -2,33 +2,62 @@
  * steps control
  */
 
-import { Steps } from 'antd'
+import { Breadcrumb } from 'antd'
 
-const { Step } = Steps
+const { Item } = Breadcrumb
 
 export default function StepUi (props) {
   const arr = [
     {
-      title: 'Organization'
+      title: 'Org',
+      step: 0
     },
     {
-      title: 'Repositories'
+      title: 'Repo',
+      step: 1
     },
     {
-      title: 'Events'
+      title: 'Events',
+      step: 2
     }
+  ]
+  const arr2 = [
+    props.currentOrg,
+    props.currentRepo
   ]
   return (
     <div className='steps'>
-      <Steps current={props.step} onChange={props.onStepChange}>
+      <Breadcrumb>
         {
-          arr.map(n => {
+          arr.map((n, i) => {
+            let mod = null
+            let extra = arr2[i]
+            extra = extra
+              ? ': ' + (extra.login || extra.name)
+              : ''
+            const all = n.title + extra
+            if (n.step === props.step) {
+              mod = <span className='bold current step elli'>{all}</span>
+            } else if (n.step > props.step) {
+              mod = <span className='bold step elli'>{all}</span>
+            } else {
+              mod = (
+                <span
+                  className='bold pointer link step elli'
+                  onClick={() => props.onStepChange(n.step)}
+                >
+                  {all}
+                </span>
+              )
+            }
             return (
-              <Step {...n} key={n.title} />
+              <Item key={n.title}>
+                {mod}
+              </Item>
             )
           })
         }
-      </Steps>
+      </Breadcrumb>
     </div>
   )
 }

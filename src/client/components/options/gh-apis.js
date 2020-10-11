@@ -220,14 +220,14 @@ export async function request ({
   action = 'op',
   data,
   url,
-  method,
+  method = 'GET',
   headers
 }) {
   const res = await fetch.post(window.rc.server + path, {
     action: 'op',
     data,
     url,
-    method: 'GET',
+    method,
     headers
   }, {
     handleErr: (e) => {
@@ -287,11 +287,13 @@ export async function createGhWebhook (org, repo, url, events, password) {
     url: `/repos/${org}/${repo}/hooks`,
     method: 'POST',
     data: {
-      url,
-      content_type: 'json',
-      insecure_ssl: 0,
-      password,
-      digest: 1,
+      config: {
+        url,
+        content_type: 'json',
+        insecure_ssl: 0,
+        password,
+        digest: 1
+      },
       events
     }
   })

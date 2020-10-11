@@ -50,17 +50,18 @@ export async function list (req, res) {
 export async function update (req, res) {
   const { id } = req.params
   const { id: userId } = req.user
-  await Webhook.update(req.body, {
+  const r = await Webhook.update(req.body, {
     where: {
       id,
       gh_user_id: userId
     }
   })
+  res.send(r)
 }
 
 export default (app, jwtAuth) => {
-  app.get('/api/wh', jwtAuth, list)
-  app.post('/api/wh', jwtAuth, create)
-  app.patch('/api/wh/:id', jwtAuth, update)
-  app.delete('/api/wh/:id', jwtAuth, del)
+  app.get('/wh', jwtAuth, list)
+  app.post('/wh', jwtAuth, create)
+  app.post('/wh/:id', jwtAuth, update)
+  app.delete('/wh/:id', jwtAuth, del)
 }

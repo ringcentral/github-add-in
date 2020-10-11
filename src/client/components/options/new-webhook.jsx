@@ -10,6 +10,8 @@ import List from './webhook-list'
 import { Button } from 'antd'
 import { UnorderedListOutlined, LogoutOutlined } from '@ant-design/icons'
 
+const inIframe = window.top !== window
+
 export default function Main (props) {
   const {
     orgs,
@@ -28,6 +30,8 @@ export default function Main (props) {
     delWebhook,
     submit,
     logout,
+    currentOrg,
+    currentRepo,
     switchWebhookList
   } = props
   if (showList) {
@@ -35,6 +39,7 @@ export default function Main (props) {
       <List
         delWebhook={delWebhook}
         webhooks={webhooks}
+        switchWebhookList={switchWebhookList}
       />
     )
   }
@@ -72,6 +77,8 @@ export default function Main (props) {
           <Steps
             step={step}
             onStepChange={onStepChange}
+            currentOrg={currentOrg}
+            currentRepo={currentRepo}
           />
         </div>
       </div>
@@ -82,13 +89,19 @@ export default function Main (props) {
       </div>
       <div className='steps-footer'>
         <div className='main-body'>
-          <Button
-            type='primary'
-            disabled={disabled}
-            onClick={submit}
-          >
-            Submit
-          </Button>
+          {
+            !inIframe
+              ? (
+                <Button
+                  type='primary'
+                  disabled={disabled}
+                  onClick={submit}
+                >
+                  Submit
+                </Button>
+              )
+              : null
+          }
           <span
             className='pointer goto-list iblock mg2l'
             onClick={() => switchWebhookList(true)}
@@ -96,7 +109,7 @@ export default function Main (props) {
             <UnorderedListOutlined /> Webhook List
           </span>
           <span
-            className='pointer logout iblock mg2l'
+            className='pointer logout fright'
             onClick={logout}
           >
             <LogoutOutlined /> Logout

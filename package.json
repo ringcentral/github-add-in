@@ -66,7 +66,8 @@
     "webpack-cli": "3.3.11",
     "webpack-dev-server": "3.10.3",
     "webpack-obfuscator": "^0.28.1",
-    "yarn-upgrade-all": "^0.5.4"
+    "yarn-upgrade-all": "^0.5.4",
+    "rc-postmessage": "git+ssh://git@git.ringcentral.com:lib/rc-postmessage.git#master"
   },
   "dependencies": {
     "@octokit/core": "^3.1.2",

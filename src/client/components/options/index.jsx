@@ -3,11 +3,17 @@ import eventTypes from '../../common/github-events'
 import Entry from './entry'
 import NewWebhook from './new-webhook'
 import fetchUser from '../../common/get-user'
-import { Spin } from 'antd'
+import { Spin, Modal } from 'antd'
 import { getOrgs, getRepos, createGhWebhook, delGhWebhook } from './gh-apis'
 import { listDbWebhook, createDbWebhook, updateDbWebhook, delDbWebhook } from './db-apis'
 import copy from 'json-deep-copy'
+import { PostMessageApp } from 'rc-postmessage'
+import { MESSAGE_CHANNEL } from '../../common/constants'
 import './options.styl'
+
+const msgHandler = new PostMessageApp({
+  debug: true
+})
 
 export default function Options () {
   const [state, setStateOrg] = useState({
@@ -47,8 +53,8 @@ export default function Options () {
     const up = {
       loadingWebhook: false
     }
-    if (arr && arr.result) {
-      up.webhooks = arr.result
+    if (arr) {
+      up.webhooks = arr
     }
     setState(up)
   }
@@ -93,16 +99,18 @@ export default function Options () {
     setState({
       loadingRepos: true
     })
-    const repos = await getRepos(org, isUser)
+    const repos = await getRepos(org.login, isUser)
     const update = {
-      repos: repos || state.repos,
       loadingRepos: false
+    }
+    if (repos) {
+      update.repos = repos
     }
     setState(update)
   }
   function onClickOrg (org) {
     const isUser = org.login === window.rc.user.gh_user_info.login
-    fetchRepos(org.login, isUser)
+    fetchRepos(org, isUser)
     setState({
       currentRepo: null,
       step: 1,
@@ -126,8 +134,8 @@ export default function Options () {
       events
     })
     const { id } = wh
-    const orgId = state.currentOrg.id
-    const repoId = state.currentRepo.id
+    const orgId = state.currentOrg.login
+    const repoId = state.currentRepo.name
     const url = window.rc.server + '/gh/webhook/' + id
     const wh1 = await createGhWebhook(
       orgId,
@@ -136,7 +144,7 @@ export default function Options () {
       events
     )
     const up = {
-      ghWebhookId: wh1.id
+      gh_webhook_id: '' + wh1.id
     }
     await updateDbWebhook({
       id,
@@ -151,9 +159,16 @@ export default function Options () {
       return {
         ...old,
         webhooks: arr,
-        submitting: false
+        submitting: false,
+        selectedEvents: []
       }
     })
+    Modal.success({
+      content: 'Done! Webhook created'
+    })
+    return {
+      status: true
+    }
   }
   function onClickRepo (repo) {
     setState({
@@ -165,6 +180,9 @@ export default function Options () {
     const currentStep = state.step
     if (step >= currentStep) {
       return null
+    }
+    if (step !== 2) {
+      nofitfyCanSubmit(false)
     }
     if (step === 0) {
       setState({
@@ -184,11 +202,13 @@ export default function Options () {
     setState({
       submitting: true
     })
-    await delGhWebhook(
-      wh.gh_org.id,
-      wh.gh_repo.id,
-      wh.gh_webhook_id
-    )
+    if (wh.gh_webhook_id) {
+      await delGhWebhook(
+        wh.gh_org.login,
+        wh.gh_repo.name,
+        wh.gh_webhook_id
+      )
+    }
     await delDbWebhook(wh.id)
     setStateOrg(old => {
       const arr = copy(old.webhooks)
@@ -205,6 +225,9 @@ export default function Options () {
       showList
     })
   }
+  function nofitfyCanSubmit (status) {
+    msgHandler.send(MESSAGE_CHANNEL.oauth, { status })
+  }
   function onSelectEvent (event) {
     setStateOrg(old => {
       const { id } = event
@@ -217,13 +240,21 @@ export default function Options () {
           id
         ]
       }
+      nofitfyCanSubmit(arr.length > 0 && state.step === 2)
       return {
         ...old,
         selectedEvents: arr
       }
     })
   }
+  function handleEvent () {
+    // window.addEventListener('message', e => {
+    //   console.log('inside evet', e)
+    // })
+    msgHandler.handle(MESSAGE_CHANNEL.submitted, submit)
+  }
   useEffect(() => {
+    handleEvent()
     fetchUserInfo()
   }, [])
   const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting

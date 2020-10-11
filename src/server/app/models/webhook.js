@@ -12,7 +12,7 @@ export const Webhook = sequelize.define('GithubForGlipIntegrationWebhook', {
     type: Sequelize.STRING
   },
   gh_user: {
-    type: Sequelize.STRING
+    type: Sequelize.JSON
   },
   rc_webhook: {
     type: Sequelize.STRING
@@ -21,10 +21,10 @@ export const Webhook = sequelize.define('GithubForGlipIntegrationWebhook', {
     type: Sequelize.STRING
   },
   gh_org: {
-    type: Sequelize.STRING
+    type: Sequelize.JSON
   },
   gh_repo: {
-    type: Sequelize.STRING
+    type: Sequelize.JSON
   },
   gh_events: {
     type: Sequelize.STRING

@@ -3,6 +3,7 @@
  */
 
 import classnames from 'classnames'
+import { CheckCircleOutlined } from '@ant-design/icons'
 
 export default (props) => {
   function renderItem (event) {
@@ -23,7 +24,10 @@ export default (props) => {
         key={id}
         onClick={() => props.onClick(event)}
       >
-        <div className='bold mg1b'>{name}</div>
+        <div className='bold mg1b'>
+          {name}
+          <CheckCircleOutlined className='check-icon fright' />
+        </div>
         <div>{desc}</div>
       </div>
     )

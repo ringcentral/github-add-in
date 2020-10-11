@@ -7,9 +7,10 @@
  */
 
 import { CloseCircleOutlined, RollbackOutlined } from '@ant-design/icons'
-import { Spin, Tag, Popconfirm } from 'antd'
+import { Tag, Popconfirm, List } from 'antd'
 import eventsList from '../../common/github-events'
 
+const { Item } = List
 const arr = eventsList()
 const tree = arr.reduce((p, k) => {
   return {
@@ -30,48 +31,56 @@ export default function WebhookList (props) {
       gh_events: events
     } = item
     return (
-      <div
-        className='item'
+      <Item
         key={id}
-        title={repo.full_name}
-        onClick={() => props.onClick(item)}
+        actions={[
+          <Popconfirm
+            title='Are you sure about deleting this?'
+            onConfirm={() => props.delWebhook(item)}
+            okText='Yes'
+            cancelText='No'
+            key='del-item-conf'
+          >
+            <CloseCircleOutlined
+              className='pointer del-webhook-icon'
+            />
+            <span className='mg1l'>Delete</span>
+          </Popconfirm>
+        ]}
       >
-        <h3>
-          {repo.full_name}
-          <span className='fright'>
-            <Popconfirm
-              title='Are you sure about deleting this?'
-              onConfirm={() => props.delWebhook(id)}
-              okText='Yes'
-              cancelText='No'
-            >
-              <CloseCircleOutlined
-                onClick={() => props.delWebhook(id)}
-                className='pointer del-webhook-icon'
-              />
-            </Popconfirm>
-          </span>
-        </h3>
-        <p>
-          {
-            events.map(renderEvent)
-          }
-        </p>
-      </div>
+        <Item.Meta
+          title={repo.full_name}
+          description={(
+            <p>
+              {
+                (events || '').split(',').map(renderEvent)
+              }
+            </p>
+          )}
+        />
+      </Item>
     )
   }
   return (
-    <div className='webhook-list'>
-      <h2>
-        <span>Webhook List</span>
-        <RollbackOutlined
-          className='pointer mg1l'
-        />
-      </h2>
-      <div className='repos-body'>
-        {
-          props.webhooks.map(renderItem)
-        }
+    <div className='webhook-list main-wrap'>
+      <div className='steps-head'>
+        <div className='pd2 bold font16'>
+          <span className='iblock'>Webhook List</span>
+          <RollbackOutlined
+            className='pointer mg2l iblock font14'
+            onClick={() => props.switchWebhookList(false)}
+          />
+        </div>
+      </div>
+      <div className='steps-content'>
+        <div className='main-body'>
+          <List
+            dataSource={props.webhooks}
+            renderItem={renderItem}
+            size='small'
+            bordered
+          />
+        </div>
       </div>
     </div>
   )

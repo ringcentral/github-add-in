@@ -6,7 +6,7 @@
 import fetch from '../../lib/fetch'
 
 export async function request ({
-  path = '/api/wh',
+  path = '/wh',
   method,
   data
 }) {
@@ -22,10 +22,7 @@ export async function request ({
       console.log(e)
     }
   }
-  const res = await fetch[method](window.rc.server + path, secondArg, third)
-  if (res && res.result) {
-    return res.result
-  }
+  return fetch[method](window.rc.server + path, secondArg, third)
 }
 
 export async function createDbWebhook ({
@@ -56,8 +53,8 @@ export async function updateDbWebhook ({
   update
 }) {
   return request({
-    path: '/api/wh/' + id,
-    method: 'patch',
+    path: '/wh/' + id,
+    method: 'post',
     data: update
   })
 }
@@ -66,7 +63,7 @@ export async function delDbWebhook (
   id
 ) {
   return request({
-    path: '/api/wh/' + id,
+    path: '/wh/' + id,
     method: 'delete'
   })
 }
@@ -75,12 +72,5 @@ export async function listDbWebhook () {
   const r = await request({
     method: 'get'
   })
-  return r
-    ? r.map(r => {
-      return {
-        ...r,
-        events: r.events.split(',')
-      }
-    })
-    : []
+  return r || []
 }

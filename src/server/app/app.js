@@ -36,6 +36,7 @@ export default function extend (app) {
 
   app.get(APP_HOME, viewIndex('install'))
   app.get('/options', viewIndex('options'))
+  app.get('/test-app', viewIndex('test'))
   webhook(app)
   admin(app)
   dbWebhook(app, jwtAuth)
