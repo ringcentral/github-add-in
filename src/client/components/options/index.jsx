@@ -7,7 +7,7 @@ import { Spin, Modal } from 'antd'
 import { getOrgs, getRepos, createGhWebhook, delGhWebhook } from './gh-apis'
 import { listDbWebhook, createDbWebhook, updateDbWebhook, delDbWebhook } from './db-apis'
 import copy from 'json-deep-copy'
-import { PostMessageApp } from '../../external/rc-postmessage'
+import { PostMessageApp } from '../../external/rc-postmessage/dist/RcPostMessage.es5'
 import { MESSAGE_CHANNEL } from '../../common/constants'
 import './options.styl'
 
