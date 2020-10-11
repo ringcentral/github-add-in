@@ -11,9 +11,7 @@ import { PostMessageApp } from '../../external/rc-postmessage'
 import { MESSAGE_CHANNEL } from '../../common/constants'
 import './options.styl'
 
-const msgHandler = new PostMessageApp({
-  debug: true
-})
+const msgHandler = new PostMessageApp()
 
 export default function Options () {
   const [state, setStateOrg] = useState({
