@@ -44,13 +44,33 @@ cp .env.sample .env
 # set glip webhook url copied as STATIC_WEBHOOK
 # set GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET (by create github oauth app)
 
+# start dynamodb local
+npm run dynamo
+
 # run local dev server
 npm start
 
-# run client in another terminal
+# run client
 npm run c
+
+# then visit https://xxxx.ap.ngrok.io
+
 ```
+
+## Deploy to AWS Lambda
+
+```bash
+cp deploy/env.sample.yml deploy/env.yml
+cp deploy/serverless.sample.yml deploy/serverless.yml
+
+# then edit deploy/env.yml and deploy/serverless.yml
+
+# deploy
+npm run deploy
+```
+
+More detail: https://github.com/ringcentral/glip-integration-js/blob/master/docs/deploy-to-lambda.md
 
 ## production test
 
-url: https://zz9zajn5ok.execute-api.us-east-1.amazonaws.com/prod/app?webhook=https://hooks.glip.com/webhook/v2/162a1793-5c73-49b7-b88e-28d88617a14a
+Please join `test-bots` team in Glip first, then visit url: https://zz9zajn5ok.execute-api.us-east-1.amazonaws.com/prod/app?webhook=https://hooks.glip.com/webhook/v2/162a1793-5c73-49b7-b88e-28d88617a14a

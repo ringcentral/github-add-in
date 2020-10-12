@@ -9,7 +9,8 @@ export default function Install () {
   const { server } = window.rc
   const [state, setState] = useState({
     fetchingUser: false,
-    user: {}
+    user: {},
+    showAuth: false
   })
   const {
     fetchingUser,
@@ -21,6 +22,21 @@ export default function Install () {
       fetchingUser: true
     })
     await logoutFunc()
+  }
+  function onAuthCallack (e) {
+    console.log(e)
+    if (e && e.data && e.data.authDone) {
+      window.location.href = e.data.redirect
+    }
+    window.removeEventListener('message', onAuthCallack)
+  }
+  function auth () {
+    const url = window.rc.authUrlDefault.replace(
+      window.rc.defaultState,
+      encodeURIComponent(window.rc.query.webhook)
+    )
+    window.open(url)
+    window.addEventListener('message', onAuthCallack)
   }
   async function fetchUserInfo () {
     setter({
@@ -58,7 +74,7 @@ export default function Install () {
             type='primary'
             size='large'
           >
-            Select repos and events
+            Select repo and events
           </Button>
         </a>
       </p>
@@ -81,10 +97,6 @@ export default function Install () {
     )
   }
   function renderLogined () {
-    const red = encodeURIComponent(
-      window.location.href
-    )
-    const url = `${server}/logout?redirect=${red}`
     return (
       <div className='outer'>
         <div className='aligncenter wrap'>
@@ -105,24 +117,19 @@ export default function Install () {
     )
   }
   function renderNotLogined () {
-    const url = window.rc.authUrlDefault.replace(
-      window.rc.defaultState,
-      encodeURIComponent(window.rc.query.webhook)
-    )
     return (
       <div className='aligncenter wrap'>
         {renderTitle()}
         <Spin spinning={fetchingUser}>
           <div className='pd1b pd1t'>
-            <a href={url}>
-              <Button
-                icon={<LoginOutlined />}
-                type='primary'
-                size='large'
-              >
-                Authorization with GitHub
-              </Button>
-            </a>
+            <Button
+              icon={<LoginOutlined />}
+              type='primary'
+              size='large'
+              onClick={auth}
+            >
+              Authorization with GitHub
+            </Button>
           </div>
         </Spin>
       </div>

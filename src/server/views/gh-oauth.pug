@@ -19,7 +19,8 @@ html
         if (window.opener) {
           setTimeout(function() {
             window.opener.postMessage({
-              authDone: true
+              authDone: true,
+              redirect: window.rc.redirect
             }, '*')
             window.close()
           }, 100)
