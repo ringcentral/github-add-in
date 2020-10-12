@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import eventTypes from '../../common/github-events'
 import Entry from './entry'
 import NewWebhook from './new-webhook'
@@ -12,9 +12,8 @@ import logoutFunc from '../../common/logout'
 import { MESSAGE_CHANNEL } from '../../common/constants'
 import './options.styl'
 
-const msgHandler = new PostMessageApp()
-
 export default function Options () {
+  const ref = useRef(null)
   const [state, setStateOrg] = useState({
     loadingUser: false,
     orgs: [],
@@ -247,7 +246,7 @@ export default function Options () {
     })
   }
   function nofitfyCanSubmit (status) {
-    msgHandler.send(MESSAGE_CHANNEL.oauth, { status })
+    ref.current.send(MESSAGE_CHANNEL.oauth, { status })
   }
   function onSelectEvent (event) {
     setStateOrg(old => {
@@ -269,15 +268,21 @@ export default function Options () {
     })
   }
   function handleEvent () {
-    // window.addEventListener('message', e => {
-    //   console.log('inside evet', e)
-    // })
-    msgHandler.handle(MESSAGE_CHANNEL.submitted, submit)
+    if (ref.current) {
+      ref.current.dispose()
+    }
+    ref.current = new PostMessageApp()
+    ref.current.handle(MESSAGE_CHANNEL.submitted, submit)
   }
   useEffect(() => {
-    handleEvent()
+    // window.addEventListener('message', e => {
+    //   console.log('inside evet', e.data)
+    // })
     fetchUserInfo()
   }, [])
+  useEffect(() => {
+    handleEvent()
+  }, [state.selectedEvents, state.user, state.currentOrg, state.currentRepo])
   const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting || state.loadingUser
   const funcs = {
     fetchWebhooks,
