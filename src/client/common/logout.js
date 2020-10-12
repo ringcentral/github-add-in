@@ -13,7 +13,5 @@ export default async function () {
       console.log('logout error')
     }
   })
-  const q = window.location.href.split('?')[1] || ''
-  const r = window.rc.server + window.rc.home + '?' + q
-  window.location.href = window.rc.server + '/logout?redirect=' + encodeURIComponent(r)
+  window.localStorage.removeItem(window.rc.jwtPrefix + ':rcpf-jwt-token')
 }

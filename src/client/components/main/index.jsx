@@ -43,9 +43,28 @@ export default function Options () {
   async function logout (e) {
     e.preventDefault()
     setState({
-      loadingUser: true
+      loadingUser: true,
+      user: {}
     })
     await logoutFunc()
+    setState({
+      loadingUser: false
+    })
+  }
+  function onAuthCallack (e) {
+    console.log(e)
+    if (e && e.data && e.data.authDone) {
+      fetchUserInfo()
+    }
+    window.removeEventListener('message', onAuthCallack)
+  }
+  function onAuth () {
+    const url = window.rc.authUrlDefault.replace(
+      window.rc.defaultState,
+      encodeURIComponent(window.rc.query.webhook)
+    )
+    window.open(url)
+    window.addEventListener('message', onAuthCallack)
   }
   async function fetchWebhooks () {
     setState({
@@ -292,6 +311,7 @@ export default function Options () {
     <Entry
       authUrl={authUrl}
       loadingUser={state.loadingUser}
+      onAuth={onAuth}
     />
   )
 }

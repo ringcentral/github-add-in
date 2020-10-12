@@ -24,8 +24,7 @@ const isProd = env.NODE_ENV === 'production'
 const config = {
   mode: 'development',
   entry: {
-    install: './src/client/install.js',
-    options: './src/client/options.js',
+    app: './src/client/app.js',
     test: './src/client/test.js'
   },
   externals: {
@@ -41,9 +40,6 @@ const config = {
     publicPath: '/',
     chunkFilename: 'js/[name].bundle.js',
     libraryTarget: 'var'
-  },
-  optimization: {
-    minimize: true
   },
   module: {
     rules: [
@@ -97,6 +93,7 @@ const config = {
   },
   devtool: 'source-map',
   optimization: {
+    minimize: true,
     minimizer: [
       new OptimizeCSSAssetsPlugin({})
     ]

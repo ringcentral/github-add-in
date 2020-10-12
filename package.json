@@ -84,7 +84,8 @@
     "parser": "babel-eslint",
     "ignore": [
       "*-compiled.js",
-      "/dist/"
+      "dist",
+      "external"
     ]
   }
 }

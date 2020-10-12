@@ -34,8 +34,7 @@ export default function extend (app) {
   app.post('/api/action', jwtAuth, errHandler, api)
   app.get('/logout', logout)
 
-  app.get(APP_HOME, viewIndex('install'))
-  app.get('/options', viewIndex('options'))
+  app.get(APP_HOME, viewIndex('app'))
   app.get('/test-app', viewIndex('test'))
   webhook(app)
   admin(app)
