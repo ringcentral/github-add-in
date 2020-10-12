@@ -8,6 +8,7 @@ import { getOrgs, getRepos, createGhWebhook, delGhWebhook } from './gh-apis'
 import { listDbWebhook, createDbWebhook, updateDbWebhook, delDbWebhook } from './db-apis'
 import copy from 'json-deep-copy'
 import { PostMessageApp } from '../../external/rc-postmessage'
+import logoutFunc from '../../common/logout'
 import { MESSAGE_CHANNEL } from '../../common/constants'
 import './options.styl'
 
@@ -39,9 +40,12 @@ export default function Options () {
       }
     })
   }
-  function logout () {
-    const url = encodeURIComponent(window.location.href)
-    window.location.href = `${window.rc.server}/logout?redirect=${url}`
+  async function logout (e) {
+    e.preventDefault()
+    setState({
+      loadingUser: true
+    })
+    await logoutFunc()
   }
   async function fetchWebhooks () {
     setState({
@@ -255,7 +259,7 @@ export default function Options () {
     handleEvent()
     fetchUserInfo()
   }, [])
-  const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting
+  const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting || state.loadingUser
   const funcs = {
     fetchWebhooks,
     fetchOrgs,

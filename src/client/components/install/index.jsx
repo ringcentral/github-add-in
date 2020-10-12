@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Spin } from 'antd'
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons'
 import fetchUser from '../../common/get-user'
+import logoutFunc from '../../common/logout'
 import './install.styl'
 
 export default function Install () {
@@ -14,6 +15,13 @@ export default function Install () {
     fetchingUser,
     user
   } = state
+  async function logout (e) {
+    e.preventDefault()
+    setter({
+      fetchingUser: true
+    })
+    await logoutFunc()
+  }
   async function fetchUserInfo () {
     setter({
       fetchingUser: true
@@ -83,7 +91,11 @@ export default function Install () {
           {renderTitle()}
           <p>
             You already authorized the app with your GitHubAccount: <b>{user.email}</b>. you can
-            <a href={url} className='iblock mg1l'>
+            <a
+              href='#'
+              className='iblock mg1l'
+              onClick={logout}
+            >
               <LogoutOutlined /> logout
             </a> so you can login with another account.
           </p>
