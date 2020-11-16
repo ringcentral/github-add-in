@@ -103,3 +103,11 @@ typings/
 # TernJS port file
 .tern-port
 /temp/
+deploy/env.yml
+deploy/serverless.yml
+deploy/*.js
+deploy/dist
+deploy/views
+deploy/app
+deploy/package.json
+deploy/package-lock.json
