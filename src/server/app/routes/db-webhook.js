@@ -3,6 +3,7 @@
  */
 
 import { Webhook } from '../models/webhook'
+import { User } from '../models/gh'
 import _ from 'lodash'
 
 export async function create (req, res) {
@@ -22,6 +23,18 @@ export async function create (req, res) {
       'gh_events'
     ])
   })
+  const user = await User.findByPk(userId)
+  const webhooks = (user.webhooks || '')
+    .split(',')
+    .filter(d => d)
+  webhooks.push(r.id)
+  await User.update({
+    webhooks: webhooks.join(',')
+  }, {
+    where: {
+      id: userId
+    }
+  })
   res.send(r)
 }
 
@@ -34,16 +47,30 @@ export async function del (req, res) {
       gh_user_id: userId
     }
   })
+  const user = await User.findByPk(userId)
+  const webhooks = (user.webhooks || '')
+    .split(',')
+    .filter(d => d)
+    .filter(d => d !== id)
+    .join(',')
+  await User.update({
+    webhooks
+  }, {
+    where: {
+      id: userId
+    }
+  })
   res.send(r)
 }
 
 export async function list (req, res) {
   const { id } = req.user
-  const r = await Webhook.findAll({
-    where: {
-      gh_user_id: id
-    }
-  })
+  const gh = await User.findByPk(id)
+  const webhookIds = (gh.webhooks || '')
+    .split(',')
+    .filter(d => d)
+    .map(id => ({ id }))
+  const r = await Webhook.batchGet(webhookIds)
   res.send(r)
 }
 

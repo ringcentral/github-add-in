@@ -21,6 +21,9 @@ export const Service = sequelize.define('GithubForGlipIntegrationUsers', {
     type: Sequelize.BOOLEAN,
     defaultValue: true
   },
+  webhooks: { // webhook ids
+    type: Sequelize.STRING
+  },
   data: { // all other data associcated with this user
     type: Sequelize.JSON
   }
