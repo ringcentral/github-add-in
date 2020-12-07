@@ -144,7 +144,7 @@ function formCommon (body, extend = {}, cards = []) {
           },
           ...cards,
           {
-            title: 'Feedback (about the github notification app)',
+            title: 'Feedback (Any suggestions, or issues about the github notification app?)',
             value: FEEDBACK_URL,
             style: 'long'
           }
