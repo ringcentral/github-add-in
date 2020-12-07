@@ -130,6 +130,7 @@ function formCommon (body, extend = {}, cards = []) {
         fallback: extend.title_link,
         title_link: url,
         text: url,
+        footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`,
         image_url: body.repository.owner.avatar_url,
         fields: [
           {
@@ -142,12 +143,7 @@ function formCommon (body, extend = {}, cards = []) {
             value: `[${body.repository.full_name}](${body.repository.html_url})`,
             style: 'long'
           },
-          ...cards,
-          {
-            title: 'Feedback (Any suggestions, or issues about the github notification app?)',
-            value: FEEDBACK_URL,
-            style: 'long'
-          }
+          ...cards
         ],
         ...extend
       }
