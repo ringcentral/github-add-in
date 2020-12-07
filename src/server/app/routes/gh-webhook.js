@@ -5,6 +5,8 @@
 import { Webhook } from '../models/webhook'
 import axios from 'axios'
 
+const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
+
 function formStar (body) {
   const action = body.action
   const map = {
@@ -140,7 +142,12 @@ function formCommon (body, extend = {}, cards = []) {
             value: `[${body.repository.full_name}](${body.repository.html_url})`,
             style: 'long'
           },
-          ...cards
+          ...cards,
+          {
+            title: 'Feedback (about the github notification app)',
+            value: FEEDBACK_URL,
+            style: 'long'
+          }
         ],
         ...extend
       }
