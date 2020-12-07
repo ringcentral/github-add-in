@@ -3,9 +3,11 @@
 
 Github integration for Glip team messaging.
 
+CI: https://xrs04-c01-utl11.lab.nordigy.ru/view/glip-integration-apps/job/glip-integration-github/
+
 ## YouTube video
 
-todo
+[https://youtu.be/_NExqVn6Nro](https://youtu.be/_NExqVn6Nro)
 
 ## Use
 
