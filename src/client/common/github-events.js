@@ -102,11 +102,11 @@ export default () => ([
     desc: 'Project column created, updated, moved or deleted.',
     name: 'Project columns'
   },
-  {
-    id: 'public',
-    desc: 'Repository changes from private to public.',
-    name: 'Visibility changes'
-  },
+  // {
+  //   id: 'public',
+  //   desc: 'Repository changes from private to public.',
+  //   name: 'Visibility changes'
+  // },
   {
     id: 'pull_request',
     desc: 'Pull request opened, closed, reopened, edited, assigned, unassigned, review requested, review request removed, labeled, unlabeled, synchronized, ready for review, converted to draft, locked, or unlocked.',
@@ -133,16 +133,16 @@ export default () => ([
     desc: 'Release created, edited, published, unpublished, or deleted.',
     name: 'Releases'
   },
-  {
-    id: 'repository',
-    desc: 'Repository created, deleted, archived, unarchived, publicized, privatized, edited, renamed, or transferred.',
-    name: 'Repositories'
-  },
-  {
-    id: 'repository_import',
-    desc: 'Repository import succeeded, failed, or cancelled.',
-    name: 'Repository imports'
-  },
+  // {
+  //   id: 'repository',
+  //   desc: 'Repository created, deleted, archived, unarchived, publicized, privatized, edited, renamed, or transferred.',
+  //   name: 'Repositories'
+  // },
+  // {
+  //   id: 'repository_import',
+  //   desc: 'Repository import succeeded, failed, or cancelled.',
+  //   name: 'Repository imports'
+  // },
   {
     id: 'repository_vulnerability_alert',
     desc: 'Security alert created, resolved, or dismissed on a repository.',
@@ -157,11 +157,11 @@ export default () => ([
     id: 'status',
     desc: 'Commit status updated from the API.',
     name: 'Statuses'
-  },
-  {
-    id: 'team_add',
-    desc: 'Team added or modified on a repository.',
-    name: 'Team adds'
-  },
-  { id: 'watch', desc: 'User stars a repository.', name: 'Watches' }
+  }
+  // {
+  //   id: 'team_add',
+  //   desc: 'Team added or modified on a repository.',
+  //   name: 'Team adds'
+  // },
+  // { id: 'watch', desc: 'User stars a repository.', name: 'Watches' }
 ])

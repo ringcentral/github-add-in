@@ -4,8 +4,13 @@
 
 import { Webhook } from '../models/webhook'
 import axios from 'axios'
+import _ from 'lodash'
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
+
+function formatAction (action) {
+  return action.replace(/_/g, ' ')
+}
 
 function formStar (body) {
   const action = body.action
@@ -23,7 +28,7 @@ function formRelease (body) {
   const url = body.release.html_url
   const type = ''
   const ext = {
-    title: `Release ${type}${body.action}`,
+    title: `Release ${type}${formatAction(body.action)}`,
     title_link: url
   }
   const cards = [{
@@ -87,7 +92,7 @@ function formPr (body) {
     }
   }
   const ext = {
-    title: `Pull Request${type} ${body.action}`,
+    title: `Pull Request${type} ${formatAction(body.action)}`,
     title_link: url
   }
   return formCommon(body, ext, cards)
@@ -115,6 +120,21 @@ function formPush (body) {
       value: `[${c.message}](${c.url})`
     }
   })
+  return formCommon(body, ext, cards)
+}
+
+function formAct (title, body, linkProp) {
+  const link = linkProp
+    ? _.get(body, linkProp)
+    : undefined
+  const action = body.action
+    ? ` ${formatAction(body.action)}`
+    : ''
+  const ext = {
+    title: `New event: ${title}${action}`,
+    title_link: link
+  }
+  const cards = []
   return formCommon(body, ext, cards)
 }
 
@@ -168,6 +188,44 @@ function transform (body) {
     return formPr(body)
   } else if (body.commits) {
     return formPush(body)
+  } if (body.check_run) {
+    return formAct('Check run', body)
+  } if (body.check_suite) {
+    return formAct('Check suite', body)
+  } if (body.alert) {
+    return formAct('Alert', body)
+  } if (body.content_reference) {
+    return formAct('Content reference', body)
+  } if (body.master_branch && body.ref) {
+    return formAct('A Git branch or tag created', body)
+  } if (body.ref) {
+    return formAct('A Git branch or tag deleted', body)
+  } if (body.key) {
+    return formAct('Deploy key', body)
+  } if (body.deployment_status) {
+    return formAct('Deployment Status', body)
+  } if (body.deployment) {
+    return formAct('Deployment', body)
+  } if (body.forkee) {
+    return formAct('Fork created', body, 'forkee.html_url')
+  } if (body.pages) {
+    return formAct('Wiki created or updated', body, 'pages[0].html_url')
+  } if (body.label) {
+    return formAct('Label', body)
+  } if (body.member) {
+    return formAct('Member', body)
+  } if (body.milestone) {
+    return formAct('Milestone', body)
+  } if (body.package) {
+    return formAct('Package', body)
+  } if (body.build) {
+    return formAct('Page build', body)
+  } if (body.project_card) {
+    return formAct('Project card', body)
+  } if (body.project_column) {
+    return formAct('Project column', body)
+  } if (body.state) {
+    return formAct('Status of a Git commit changes', body)
   } else {
     return formCommon(body)
   }
