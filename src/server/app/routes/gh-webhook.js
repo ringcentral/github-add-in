@@ -130,8 +130,10 @@ function formCommon (body, extend = {}, cards = []) {
         fallback: extend.title_link,
         title_link: url,
         text: url,
+        author_name: body.sender.login,
+        author_link: body.sender.html_url,
+        author_icon: body.repository.owner.avatar_url,
         footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`,
-        image_url: body.repository.owner.avatar_url,
         fields: [
           {
             title: 'Sender',
