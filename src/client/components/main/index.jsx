@@ -39,6 +39,12 @@ export default function Options () {
       }
     })
   }
+  function getFrameName () {
+    const arr = window.location.href.match(/frameName=([\w-_\d]+)/)
+    return arr
+      ? arr[1]
+      : ''
+  }
   async function logout (e) {
     e.preventDefault()
     setState({
@@ -62,7 +68,7 @@ export default function Options () {
       window.rc.defaultState,
       encodeURIComponent(window.rc.query.webhook)
     )
-    window.open(url)
+    window.open(url, getFrameName())
     window.addEventListener('message', onAuthCallack)
   }
   async function fetchWebhooks () {
