@@ -7,7 +7,13 @@ import axios from 'axios'
 import _ from 'lodash'
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
-
+const repositoryEventProps = [
+  'action',
+  'repository',
+  'organization',
+  'installation',
+  'sender'
+]
 function formatAction (action) {
   return action.replace(/_/g, ' ')
 }
@@ -123,12 +129,13 @@ function formPush (body) {
   return formCommon(body, ext, cards)
 }
 
-function formAct (title, body, linkProp) {
+function formAct (title, body, linkProp, actProp = 'action') {
   const link = linkProp
     ? _.get(body, linkProp)
     : undefined
-  const action = body.action
-    ? ` ${formatAction(body.action)}`
+  const act = body[actProp] || ''
+  const action = act
+    ? ` ${formatAction(act)}`
     : ''
   const ext = {
     title: `New event: ${title}${action}`,
@@ -188,44 +195,58 @@ function transform (body) {
     return formPr(body)
   } else if (body.commits) {
     return formPush(body)
-  } if (body.check_run) {
+  } else if (body.check_run) {
     return formAct('Check run', body)
-  } if (body.check_suite) {
+  } else if (body.check_suite) {
     return formAct('Check suite', body)
-  } if (body.alert) {
+  } else if (body.alert) {
     return formAct('Alert', body)
-  } if (body.content_reference) {
+  } else if (body.content_reference) {
     return formAct('Content reference', body)
-  } if (body.master_branch && body.ref) {
+  } else if (body.master_branch && body.ref) {
     return formAct('A Git branch or tag created', body)
-  } if (body.ref) {
+  } else if (body.ref) {
     return formAct('A Git branch or tag deleted', body)
-  } if (body.key) {
+  } else if (body.key) {
     return formAct('Deploy key', body)
-  } if (body.deployment_status) {
+  } else if (body.deployment_status) {
     return formAct('Deployment Status', body)
-  } if (body.deployment) {
+  } else if (body.deployment) {
     return formAct('Deployment', body)
-  } if (body.forkee) {
+  } else if (body.forkee) {
     return formAct('Fork created', body, 'forkee.html_url')
-  } if (body.pages) {
+  } else if (body.pages) {
     return formAct('Wiki created or updated', body, 'pages[0].html_url')
-  } if (body.label) {
+  } else if (body.label) {
     return formAct('Label', body)
-  } if (body.member) {
+  } else if (body.member) {
     return formAct('Member', body)
-  } if (body.milestone) {
+  } else if (body.milestone) {
     return formAct('Milestone', body)
-  } if (body.package) {
+  } else if (body.package) {
     return formAct('Package', body)
-  } if (body.build) {
+  } else if (body.build) {
     return formAct('Page build', body)
-  } if (body.project_card) {
+  } else if (body.project_card) {
     return formAct('Project card', body)
-  } if (body.project_column) {
+  } else if (body.project) {
+    return formAct('Project', body, 'project.html_url')
+  } else if (body.team) {
+    return formAct('Team Added', body, 'team.html_url')
+  } else if (body.project_column) {
     return formAct('Project column', body)
-  } if (body.state) {
-    return formAct('Status of a Git commit changes', body)
+  } else if (body.state) {
+    return formAct('Status of a Git commit changes', body, 'commit.html_url', 'state')
+  } else if (body.package) {
+    return formAct('Package', body, 'package.html_url')
+  } else if (
+    _.isEqual(Object.keys(body), repositoryEventProps)
+  ) {
+    return formAct('Repository', body)
+  } else if (
+    body.status && !body.installation
+  ) {
+    return formAct('Repository import', body, undefined, 'status')
   } else {
     return formCommon(body)
   }

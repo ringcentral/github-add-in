@@ -9,10 +9,12 @@ import _ from 'lodash'
 
 export class User extends Service {}
 
+const SCOPES = 'admin:repo_hook read:user read:org'
+
 const initOptions = {
   clientId: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  defaultScopes: 'admin:repo_hook read:user read:org'.split(/\r+/)
+  defaultScopes: SCOPES.split(/\r+/)
 }
 
 User.init = async ({ code, state }) => {
