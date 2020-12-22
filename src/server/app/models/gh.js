@@ -12,7 +12,7 @@ export class User extends Service {}
 const initOptions = {
   clientId: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  defaultScopes: process.env.GITHUB_SCOPES.split(/\r+/)
+  defaultScopes: 'admin:repo_hook read:user read:org'.split(/\r+/)
 }
 
 User.init = async ({ code, state }) => {
