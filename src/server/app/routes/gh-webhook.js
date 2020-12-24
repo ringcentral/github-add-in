@@ -31,6 +31,9 @@ function formStar (body) {
 }
 
 function formRelease (body) {
+  if (body.action !== 'published') {
+    return ''
+  }
   const url = body.release.html_url
   const type = ''
   const ext = {
@@ -39,7 +42,7 @@ function formRelease (body) {
   }
   const cards = [{
     title: 'Release',
-    value: `[${body.release.title}](${body.release.html_url})`
+    value: `[${body.release.body}](${body.release.html_url})`
   }]
   return formCommon(body, ext, cards)
 }
@@ -270,6 +273,10 @@ const webhook = async (req, res) => {
     return res.send('webhook not exist')
   }
   const data = transform(req.body)
+  if (!data) {
+    res.send('skip')
+    return 'skip'
+  }
   const r = await axios.post(wh.rc_webhook, data, {
     headers: {
       Accept: 'application/json',
