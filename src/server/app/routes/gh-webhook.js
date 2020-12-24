@@ -42,7 +42,7 @@ function formRelease (body) {
   }
   const cards = [{
     title: 'Release',
-    value: `[${body.release.body}](${body.release.html_url})`
+    value: `[${body.release.body || 'No description'}](${body.release.html_url})`
   }]
   return formCommon(body, ext, cards)
 }
