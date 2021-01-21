@@ -155,7 +155,7 @@ function formCommon (body, extend = {}, cards = []) {
     attachments: [
       {
         type: 'Card',
-        color: '#00ff2a',
+        color: '#000000',
         title,
         fallback: extend.title_link,
         title_link: url,
@@ -168,12 +168,14 @@ function formCommon (body, extend = {}, cards = []) {
           {
             title: 'Repository',
             value: `[${body.repository.full_name}](${body.repository.html_url})`,
-            style: 'Short'
+            style: 'Short',
+            short: true
           },
           ...cards.map(c => {
             return {
               ...c,
-              style: 'Short'
+              style: 'Short',
+              short: true
             }
           })
         ],
