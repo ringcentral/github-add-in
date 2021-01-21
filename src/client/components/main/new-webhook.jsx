@@ -32,13 +32,17 @@ export default function Main (props) {
     logout,
     currentOrg,
     currentRepo,
-    switchWebhookList
+    switchWebhookList,
+    handleSwitchFilter,
+    filterWebhook
   } = props
   if (showList) {
     return (
       <List
         delWebhook={delWebhook}
         webhooks={webhooks}
+        filterWebhook={filterWebhook}
+        handleSwitchFilter={handleSwitchFilter}
         switchWebhookList={switchWebhookList}
       />
     )

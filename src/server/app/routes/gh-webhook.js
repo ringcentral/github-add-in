@@ -42,7 +42,7 @@ function formRelease (body) {
   }
   const cards = [{
     title: 'Release',
-    value: `[${body.release.body || 'No description'}](${body.release.html_url})`
+    value: `${body.release.body || 'No description'}`
   }]
   return formCommon(body, ext, cards)
 }
@@ -168,9 +168,14 @@ function formCommon (body, extend = {}, cards = []) {
           {
             title: 'Repository',
             value: `[${body.repository.full_name}](${body.repository.html_url})`,
-            style: 'long'
+            style: 'Short'
           },
-          ...cards
+          ...cards.map(c => {
+            return {
+              ...c,
+              style: 'Short'
+            }
+          })
         ],
         ...extend
       }

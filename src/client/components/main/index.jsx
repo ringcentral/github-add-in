@@ -10,6 +10,7 @@ import copy from 'json-deep-copy'
 import { PostMessageApp } from '../../external/rc-postmessage'
 import logoutFunc from '../../common/logout'
 import { MESSAGE_CHANNEL } from '../../common/constants'
+import wait from '../../common/wait'
 import './options.styl'
 
 export default function Options () {
@@ -29,7 +30,8 @@ export default function Options () {
     submitting: false,
     loadingOrgs: false,
     loadingRepos: false,
-    loadingWebhooks: false
+    loadingWebhooks: false,
+    filterWebhook: 'current'
   })
   function setState (update) {
     setStateOrg(old => {
@@ -71,7 +73,7 @@ export default function Options () {
     window.open(url, getFrameName())
     window.addEventListener('message', onAuthCallack)
   }
-  async function fetchWebhooks () {
+  async function fetchWebhooks (firstTime) {
     setState({
       loadingWebhook: true
     })
@@ -83,7 +85,31 @@ export default function Options () {
       up.webhooks = arr
     }
     setState(up)
+    if (firstTime) {
+      checkMatchedWebhook(arr)
+    }
   }
+
+  async function checkMatchedWebhook (webhooks) {
+    await wait(100)
+    const wh = window.rc.query.webhook
+    const hasCurrentWh = webhooks.find(d => {
+      return d.rc_webhook === wh
+    })
+    if (hasCurrentWh) {
+      setState({
+        filterWebhook: 'current',
+        showList: true
+      })
+    }
+  }
+
+  function handleSwitchFilter (e) {
+    setState({
+      filterWebhook: e.target.value
+    })
+  }
+
   async function fetchUserInfo () {
     setState({
       loadingUser: true
@@ -95,7 +121,7 @@ export default function Options () {
     if (user) {
       window.rc.user = user.result
       update.user = user.result
-      fetchWebhooks()
+      fetchWebhooks(true)
       fetchOrgs()
     }
     setState(update)
@@ -301,6 +327,7 @@ export default function Options () {
     onSelectEvent,
     switchWebhookList,
     delWebhook,
+    handleSwitchFilter,
     logout
   }
   if (state.user.id) {

@@ -6,8 +6,8 @@
  * ui module for repo select
  */
 
-import { CloseCircleOutlined, RollbackOutlined } from '@ant-design/icons'
-import { Tag, Popconfirm, List } from 'antd'
+import { CloseCircleOutlined } from '@ant-design/icons'
+import { Tag, Popconfirm, List, Button, Radio } from 'antd'
 import eventsList from '../../common/github-events'
 
 const { Item } = List
@@ -61,21 +61,45 @@ export default function WebhookList (props) {
       </Item>
     )
   }
+  const opts = [
+    {
+      value: 'current',
+      label: 'Current'
+    },
+    {
+      value: 'all',
+      label: 'All'
+    }
+  ]
+  const data = props.filterWebhook === 'all'
+    ? props.webhooks
+    : props.webhooks.filter(d => {
+      return d.rc_webhook === window.rc.query.webhook
+    })
   return (
     <div className='webhook-list main-wrap'>
-      <div className='steps-head'>
-        <div className='pd2 bold font16'>
-          <span className='iblock'>Webhook List</span>
-          <RollbackOutlined
-            className='pointer mg2l iblock font14'
-            onClick={() => props.switchWebhookList(false)}
+      <div className='main-content'>
+        <div className='pd2 bold font16 fix'>
+          <span className='iblock mg3r'>Webhook List</span>
+          <Radio.Group
+            options={opts}
+            onChange={props.handleSwitchFilter}
+            value={props.filterWebhook}
+            optionType='button'
           />
+          <Button
+            type='primary'
+            className='font12 mg3l'
+            onClick={() => props.switchWebhookList(false)}
+          >
+            Create new Webhook
+          </Button>
         </div>
       </div>
-      <div className='steps-content'>
+      <div className='steps-contents'>
         <div className='main-body'>
           <List
-            dataSource={props.webhooks}
+            dataSource={data}
             renderItem={renderItem}
             size='small'
             bordered
