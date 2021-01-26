@@ -152,8 +152,7 @@ function formCommon (body, extend = {}) {
   const title = extend.title || 'New event!'
   const url = extend.title_link || body.repository.html_url
   const extra = extend.body ? '\n' + extend.body : ''
-  const bd = `**Repository**: [${body.repository.full_name}](${body.repository.html_url})
-**Author**: [${body.sender.login}](${body.sender.html_url})` + extra
+  const bd = `**Repository**: [${body.repository.full_name}](${body.repository.html_url})` + extra
   // const links = [
   //   {
   //     title: 'View Repo',
@@ -167,16 +166,17 @@ function formCommon (body, extend = {}) {
   // const linkBody = links.map(d => `**[${d.title}](${d.url})**`).join('  ')
   const r = {
     // title: `[${title}](${url})`,
-    icon: body.sender.avatar_url,
+    icon: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+    body: `**[View in GitHub](${url})**`,
     attachments: [
       {
         title: `**[${title}](${url})**`,
         type: 'Card',
         color: '#000000',
         text: bd,
-        // author_name: body.sender.login,
-        // author_link: body.sender.html_url,
-        // author_icon: body.sender.avatar_url,
+        author_name: body.sender.login,
+        author_link: body.sender.html_url,
+        author_icon: body.sender.avatar_url,
         footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`
       }
     ]
