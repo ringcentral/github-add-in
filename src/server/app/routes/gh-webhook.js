@@ -38,13 +38,10 @@ function formRelease (body) {
   const type = ''
   const ext = {
     title: `Release ${type}${formatAction(body.action)}`,
-    title_link: url
+    title_link: url,
+    body: `\n**Release Note:**\n ${body.release.body || 'No description'}`
   }
-  const cards = [{
-    title: 'Release',
-    value: `${body.release.body || 'No description'}`
-  }]
-  return formCommon(body, ext, cards)
+  return formCommon(body, ext)
 }
 
 function formIssue (body) {
@@ -66,9 +63,13 @@ function formIssue (body) {
       })
     }
   }
+  const bd = cards.map(d => {
+    return `**${d.title}**: ${d.value}`
+  }).join('\n')
   const ext = {
     title: `${title} ${type}${body.action}`,
-    title_link: url
+    title_link: url,
+    body: bd
   }
 
   return formCommon(body, ext, cards)
@@ -100,22 +101,24 @@ function formPr (body) {
       })
     }
   }
+  const bd = cards.map(d => {
+    return `**${d.title}**: ${d.value}`
+  }).join('\n')
   const ext = {
     title: `Pull Request${type} ${formatAction(body.action)}`,
-    title_link: url
+    title_link: url,
+    body: bd
   }
-  return formCommon(body, ext, cards)
+  return formCommon(body, ext)
 }
 
 function formHook (body) {
   const ext = {
-    title: 'New GitHub Webhook Created'
+    title: 'New GitHub Webhook Created',
+    body: `* Events: ${body.hook.events.join(', ')}`
   }
-  const cards = [{
-    title: 'Events',
-    value: body.hook.events.join(', ')
-  }]
-  return formCommon(body, ext, cards)
+
+  return formCommon(body, ext)
 }
 
 function formPush (body) {
@@ -124,12 +127,10 @@ function formPush (body) {
     title_link: body.compare
   }
   const cards = body.commits.map(c => {
-    return {
-      title: 'Commit',
-      value: `[${c.message}](${c.url})`
-    }
-  })
-  return formCommon(body, ext, cards)
+    return `* [${c.message}](${c.url})`
+  }).join('\n')
+  ext.body = `\n**Commits**\n${cards}`
+  return formCommon(body, ext)
 }
 
 function formAct (title, body, linkProp, actProp = 'action') {
@@ -144,42 +145,39 @@ function formAct (title, body, linkProp, actProp = 'action') {
     title: `New event: ${title}${action}`,
     title_link: link
   }
-  const cards = []
-  return formCommon(body, ext, cards)
+  return formCommon(body, ext)
 }
 
-function formCommon (body, extend = {}, cards = []) {
+function formCommon (body, extend = {}) {
   const title = extend.title || 'New event!'
   const url = extend.title_link || body.repository.html_url
+  const extra = extend.body ? '\n' + extend.body : ''
+  const bd = `**Repository**: [${body.repository.full_name}](${body.repository.html_url})
+**Author**: [${body.sender.login}](${body.sender.html_url})` + extra
+  // const links = [
+  //   {
+  //     title: 'View Repo',
+  //     url: body.repository.html_url
+  //   },
+  //   {
+  //     title: 'View Author',
+  //     url: body.sender.html_url
+  //   }, ...(extend.links || [])
+  // ]
+  // const linkBody = links.map(d => `**[${d.title}](${d.url})**`).join('  ')
   const r = {
+    // title: `[${title}](${url})`,
+    icon: body.sender.avatar_url,
     attachments: [
       {
+        title: `**[${title}](${url})**`,
         type: 'Card',
         color: '#000000',
-        title,
-        fallback: extend.title_link,
-        title_link: url,
-        text: url,
-        author_name: body.sender.login,
-        author_link: body.sender.html_url,
-        author_icon: body.sender.avatar_url,
-        footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`,
-        fields: [
-          {
-            title: 'Repository',
-            value: `[${body.repository.full_name}](${body.repository.html_url})`,
-            style: 'Short',
-            short: true
-          },
-          ...cards.map(c => {
-            return {
-              ...c,
-              style: 'Short',
-              short: true
-            }
-          })
-        ],
-        ...extend
+        text: bd,
+        // author_name: body.sender.login,
+        // author_link: body.sender.html_url,
+        // author_icon: body.sender.avatar_url,
+        footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`
       }
     ]
   }
