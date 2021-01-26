@@ -7,7 +7,7 @@ CI: https://xrs04-c01-utl11.lab.nordigy.ru/view/glip-integration-apps/job/glip-i
 
 ## YouTube video
 
-[https://youtu.be/bb7RYyDax4U](https://youtu.be/bb7RYyDax4U)
+[https://youtu.be/qL-7b03U1ow](https://youtu.be/qL-7b03U1ow)
 
 ## Use
 
