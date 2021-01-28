@@ -7,8 +7,20 @@ import axios from 'axios'
 import _ from 'lodash'
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
-const FEED_BACK_ICON_URL = 'https://raw.githubusercontent.com/ringcentral/github-notification-app/main/feedback.png'
 const GITHUB_ICON_URL = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+const baseURL = (name) => {
+  return `https://raw.githubusercontent.com/ringcentral/github-notification-app/main/icons/${name}.png`
+}
+const icons = {
+  comment: baseURL('comment'),
+  issue: baseURL('issue-opened'),
+  feedback: baseURL('feedback'),
+  'green-check': baseURL('green-check'),
+  pull: baseURL('pull-request'),
+  push: baseURL('push'),
+  release: baseURL('tag')
+}
+
 const repositoryEventProps = [
   'action',
   'repository',
@@ -39,6 +51,7 @@ function formRelease (body) {
   const url = body.release.html_url
   const type = ''
   const ext = {
+    icon: 'release',
     title: `Release ${type}${formatAction(body.action)}`,
     title_link: url,
     body: `\n**Release Note:**\n ${body.release.body || 'No description'}`
@@ -69,6 +82,7 @@ function formIssue (body) {
     return `**${d.title}**: ${d.value}`
   }).join('\n')
   const ext = {
+    icon: body.comment ? 'comment' : 'issue',
     title: `${title} ${type}${body.action}`,
     title_link: url,
     body: bd
@@ -107,6 +121,7 @@ function formPr (body) {
     return `**${d.title}**: ${d.value}`
   }).join('\n')
   const ext = {
+    icon: body.comment ? 'comment' : 'pull',
     title: `Pull Request${type} ${formatAction(body.action)}`,
     title_link: url,
     body: bd
@@ -125,6 +140,7 @@ function formHook (body) {
 
 function formPush (body) {
   const ext = {
+    icon: 'push',
     title: 'New Push event',
     title_link: body.compare
   }
@@ -180,9 +196,12 @@ function formCommon (body, extend = {}) {
         author_link: body.sender.html_url,
         author_icon: body.sender.avatar_url,
         footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`,
-        footer_icon: FEED_BACK_ICON_URL
+        footer_icon: icons.feedback
       }
     ]
+  }
+  if (extend.icon) {
+    r.attachments[0].thumb_url = icons[extend.icon]
   }
   if (!extend.title) {
     r.text = 'It is a event the Github Integration do not fully support, we will improve in future updates.'
