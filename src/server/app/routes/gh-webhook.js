@@ -7,6 +7,8 @@ import axios from 'axios'
 import _ from 'lodash'
 
 const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
+const FEED_BACK_ICON_URL = 'https://raw.githubusercontent.com/ringcentral/github-notification-app/main/feedback.png'
+const GITHUB_ICON_URL = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
 const repositoryEventProps = [
   'action',
   'repository',
@@ -166,7 +168,7 @@ function formCommon (body, extend = {}) {
   // const linkBody = links.map(d => `**[${d.title}](${d.url})**`).join('  ')
   const r = {
     // title: `[${title}](${url})`,
-    icon: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+    icon: GITHUB_ICON_URL,
     body: `**[View in GitHub](${url})**`,
     attachments: [
       {
@@ -177,7 +179,8 @@ function formCommon (body, extend = {}) {
         author_name: body.sender.login,
         author_link: body.sender.html_url,
         author_icon: body.sender.avatar_url,
-        footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`
+        footer: `[Feedback (Any suggestions, or issues about the github notification app?)](${FEEDBACK_URL})`,
+        footer_icon: FEED_BACK_ICON_URL
       }
     ]
   }
