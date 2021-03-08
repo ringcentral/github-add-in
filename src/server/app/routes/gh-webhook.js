@@ -52,7 +52,7 @@ function formRelease (body) {
   const type = ''
   const ext = {
     icon: 'release',
-    title: `Release ${type}${formatAction(body.action)}`,
+    title: `Release ${type}${formatAction(body.action)}: ${body.release.tag_name}`,
     title_link: url,
     body: `\n**Release Note:**\n ${body.release.body || 'No description'}`
   }
