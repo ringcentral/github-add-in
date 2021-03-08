@@ -3,7 +3,7 @@ import eventTypes from '../../common/github-events'
 import Entry from './entry'
 import NewWebhook from './new-webhook'
 import fetchUser from '../../common/get-user'
-import { Spin, Modal } from 'antd'
+import { Spin, Modal, notification } from 'antd'
 import { getOrgs, getRepos, createGhWebhook, delGhWebhook } from './gh-apis'
 import { listDbWebhook, createDbWebhook, updateDbWebhook, delDbWebhook } from './db-apis'
 import copy from 'json-deep-copy'
@@ -195,6 +195,19 @@ export default function Options () {
       url,
       events
     )
+    if (!wh1) {
+      setState({
+        submitting: false
+      })
+      notification.error({
+        message: 'Create webhook failed',
+        description: 'You may not have permission to create webhook in the repo'
+      })
+      await delDbWebhook(id)
+      return {
+        status: true
+      }
+    }
     const up = {
       gh_webhook_id: '' + wh1.id
     }

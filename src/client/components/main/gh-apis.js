@@ -203,6 +203,7 @@ await octokit.request('POST /repos/{owner}/{repo}/hooks', {
  */
 
 import fetch from '../../lib/fetch'
+
 function handleError (
   e,
   data,
@@ -210,7 +211,7 @@ function handleError (
   method,
   headers
 ) {
-  console.log('fetch error')
+  console.log('fetch error', e)
   console.log('method:', method)
   console.log('url:', url)
   console.log('data:', data)
