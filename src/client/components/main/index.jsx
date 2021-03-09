@@ -205,7 +205,7 @@ export default function Options () {
       })
       await delDbWebhook(id)
       return {
-        status: true
+        status: false
       }
     }
     const up = {
