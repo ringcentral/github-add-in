@@ -111,3 +111,4 @@ deploy/views
 deploy/app
 deploy/package.json
 deploy/package-lock.json
+.DS_Store

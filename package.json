@@ -47,6 +47,7 @@
     "classnames": "^2.2.6",
     "cross-env": "^7.0.2",
     "css-loader": "3.4.2",
+    "download": "^8.0.0",
     "dynamodb-local": "0.0.31",
     "file-loader": "5.0.2",
     "less": "3.11.1",

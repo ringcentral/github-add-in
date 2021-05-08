@@ -41,6 +41,22 @@ export default function Options () {
       }
     })
   }
+  function track (eventName) {
+    const segmentOptions = {
+      integrations: {
+        All: true,
+        Mixpanel: true
+      }
+    }
+    window.analytics.track(eventName, {
+      appName: window.rc.appName,
+      appVersion: window.rc.version
+      // brand: ''
+      // 'App Language': string;
+      // 'Browser Language': string;
+      // 'Extension Type': string;
+    }, segmentOptions)
+  }
   function getFrameName () {
     const arr = window.location.href.match(/frameName=([\w-_\d]+)/)
     return arr
@@ -231,6 +247,7 @@ export default function Options () {
     Modal.success({
       content: 'Done! Webhook created'
     })
+    track('GitHub Webhook created')
     return {
       status: true
     }
