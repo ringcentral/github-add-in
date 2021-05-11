@@ -3,6 +3,7 @@
  */
 
 import classnames from 'classnames'
+import { Tooltip } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 
 export default (props) => {
@@ -19,17 +20,18 @@ export default (props) => {
       }
     )
     return (
-      <div
-        className={cls}
+      <Tooltip
         key={id}
-        onClick={() => props.onClick(event)}
+        title={desc}
       >
-        <div className='bold mg1b'>
-          {name}
-          <CheckCircleOutlined className='check-icon fright' />
+        <div
+          className={cls}
+          onClick={() => props.onClick(event)}
+        >
+          <span className='iblock'>{name}</span>
+          <CheckCircleOutlined className='check-icon iblock mg1l' />
         </div>
-        <div>{desc}</div>
-      </div>
+      </Tooltip>
     )
   }
   return (
