@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from 'antd'
-import { PostMessageManager } from '../../external/rc-postmessage'
+import { RingCentralNotificationIntegrationHelper } from 'ringcentral-notification-integration-helper'
 import './test.styl'
 import { MESSAGE_CHANNEL } from '../../common/constants'
 
-const postMessage = new PostMessageManager({
-  debug: true
-})
+const postMessage = new RingCentralNotificationIntegrationHelper()
 
 export default function Test () {
   const [canSubmit, setter] = useState(false)

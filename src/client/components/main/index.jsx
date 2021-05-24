@@ -7,9 +7,8 @@ import { Spin, Modal, notification } from 'antd'
 import { getOrgs, getRepos, createGhWebhook, delGhWebhook } from './gh-apis'
 import { listDbWebhook, createDbWebhook, updateDbWebhook, delDbWebhook } from './db-apis'
 import copy from 'json-deep-copy'
-import { PostMessageApp } from '../../external/rc-postmessage'
+import { RingCentralNotificationIntegrationHelper } from 'ringcentral-notification-integration-helper'
 import logoutFunc from '../../common/logout'
-import { MESSAGE_CHANNEL } from '../../common/constants'
 import wait from '../../common/wait'
 import './options.styl'
 
@@ -57,12 +56,12 @@ export default function Options () {
       // 'Extension Type': string;
     }, segmentOptions)
   }
-  function getFrameName () {
-    const arr = window.location.href.match(/frameName=([\w-_\d]+)/)
-    return arr
-      ? arr[1]
-      : ''
-  }
+  // function getFrameName () {
+  //   const arr = window.location.href.match(/frameName=([\w-_\d]+)/)
+  //   return arr
+  //     ? arr[1]
+  //     : ''
+  // }
   async function logout (e) {
     e.preventDefault()
     setState({
@@ -86,7 +85,7 @@ export default function Options () {
       window.rc.defaultState,
       encodeURIComponent(window.rc.query.webhook)
     )
-    window.open(url, getFrameName())
+    ref.current.openWindow(url)
     window.addEventListener('message', onAuthCallack)
   }
   async function fetchWebhooks (firstTime) {
@@ -308,7 +307,7 @@ export default function Options () {
     })
   }
   function nofitfyCanSubmit (status) {
-    ref.current.send(MESSAGE_CHANNEL.oauth, { status })
+    ref.current.send({ canSubmit: status })
   }
   function onSelectEvent (event) {
     setStateOrg(old => {
@@ -333,8 +332,8 @@ export default function Options () {
     if (ref.current) {
       ref.current.dispose()
     }
-    ref.current = new PostMessageApp()
-    ref.current.handle(MESSAGE_CHANNEL.submitted, submit)
+    ref.current = new RingCentralNotificationIntegrationHelper()
+    ref.current.on('submit', submit)
   }
   useEffect(() => {
     // window.addEventListener('message', e => {
