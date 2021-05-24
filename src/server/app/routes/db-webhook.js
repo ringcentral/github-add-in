@@ -70,6 +70,9 @@ export async function list (req, res) {
     .split(',')
     .filter(d => d)
     .map(id => ({ id }))
+  if (!webhookIds.length) {
+    return res.send([])
+  }
   const r = await Webhook.batchGet(webhookIds)
   res.send(r)
 }
