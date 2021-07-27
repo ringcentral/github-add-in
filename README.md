@@ -57,6 +57,8 @@ npm run c
 
 # then visit https://xxxx.ap.ngrok.io
 
+# test adaptive cards, change name to file name in cards folder
+NAME=release node cmds/test.js
 ```
 
 ## Deploy to AWS Lambda

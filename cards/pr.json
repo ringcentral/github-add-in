@@ -1,0 +1,147 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.3",
+  "body": [
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "auto",
+          "items": [{
+            "type": "Image",
+            "url": "https://raw.githubusercontent.com/ringcentral/github-notification-app/main/icons/pull-request.png",
+            "size": "small",
+            "style": "person",
+            "width": "16px",
+            "height": "16px"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "TextBlock",
+            "text": "New Pull Request: \"[Update readme and a very very very very very very very very very very very very very very very long desc](https://github.com/ringcentral/github-notification-app)\"",
+            "weight": "bolder",
+            "wrap": true,
+            "size": "medium"
+          }]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "auto",
+          "items": [{
+            "type": "Image",
+            "url": "https://avatars.githubusercontent.com/u/1641949?v=4",
+            "size": "small",
+            "style": "person",
+            "width": "24px",
+            "height": "24px"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "TextBlock",
+            "text": "[zxdong262](https://github.com/ringcentral/github-notification-app)",
+            "weight": "lighter",
+            "wrap": true,
+            "size": "small"
+          }]
+        }
+      ]
+    },
+    {
+      "type": "FactSet",
+      "facts": [{
+          "title": "Repository:",
+          "value": "[electerm/test-repo](https://github.com/electerm/test-repo)"
+        }
+      ]
+    },
+    {
+      "type": "RichTextBlock",
+      "inlines": [{
+        "type": "TextRun",
+        "weight": "lighter",
+        "text": "Adding new documentation for new endpoint we are currently developing and continuing the conversation. Want to have a really long comment to see how comments are displayed on a card and rendered as a multi-line object that spans several sentences. Let's just talk a lot about nothing to have a really long comment."
+      }]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "FactSet",
+            "facts": [
+              {
+                "title": "Pull request #",
+                "value": "1"
+              }
+            ]
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "FactSet",
+            "facts": [
+              {
+                "title": "Commits",
+                "value": "2"
+              }
+            ]
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "FactSet",
+            "facts": [
+              {
+                "title": "Files changed",
+                "value": "1"
+              }
+            ]
+          }]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "auto",
+          "items": [{
+            "type": "Image",
+            "url": "https://github.com/ringcentral/github-notification-app/blob/main/icons/feedback-1.png?raw=true",
+            "size": "small",
+            "style": "person",
+            "width": "16px",
+            "height": "16px"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "TextBlock",
+            "text": "[Feedback](https://github.com/ringcentral/github-notification-app/issues/new)",
+            "weight": "lighter",
+            "wrap": true,
+            "size": "small"
+          }]
+        }
+      ]
+    }
+  ]
+}

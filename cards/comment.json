@@ -1,0 +1,149 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.3",
+  "body": [
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "auto",
+          "items": [{
+            "type": "Image",
+            "url": "https://raw.githubusercontent.com/ringcentral/github-notification-app/main/icons/issue-opened.png",
+            "size": "small",
+            "style": "person",
+            "width": "16px",
+            "height": "16px"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "TextBlock",
+            "text": "Comment Issue: \"[Update readme and a very very very very very very very very very very very very very very very long desc](https://github.com/ringcentral/github-notification-app)\" created",
+            "weight": "bolder",
+            "wrap": true,
+            "size": "medium"
+          }]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "auto",
+          "items": [{
+            "type": "Image",
+            "url": "https://avatars.githubusercontent.com/u/1641949?v=4",
+            "size": "small",
+            "style": "person",
+            "width": "24px",
+            "height": "24px"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "TextBlock",
+            "text": "[zxdong262](https://github.com/ringcentral/github-notification-app)",
+            "weight": "lighter",
+            "wrap": true,
+            "size": "small"
+          }]
+        }
+      ]
+    },
+    {
+      "type": "FactSet",
+      "facts": [{
+          "title": "Description:",
+          "value": "Adding new documentation for new endpoint we are currently developing and continuing the conversation. Want to have a really long comment to see how comments are displayed on a card and rendered as a multi-line object that spans several sentences. Let's just talk a lot about nothing to have a really long comment."
+        }
+      ]
+    },
+    {
+      "type": "FactSet",
+      "facts": [{
+          "title": "Repository:",
+          "value": "[electerm/test-repo](https://github.com/electerm/test-repo)"
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "FactSet",
+            "facts": [
+              {
+                "title": "Issue #",
+                "value": "1"
+              }
+            ]
+          }]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [{
+          "type": "Column",
+          "width": "auto",
+          "items": [{
+            "type": "Image",
+            "url": "https://github.com/ringcentral/github-notification-app/blob/main/icons/feedback-1.png?raw=true",
+            "size": "small",
+            "style": "person",
+            "width": "16px",
+            "height": "16px"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "TextBlock",
+            "text": "[Feedback](https://github.com/ringcentral/github-notification-app/issues/new)",
+            "weight": "lighter",
+            "wrap": true,
+            "size": "small"
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "ActionSet",
+            "actions": [
+              {
+                "type": "Action.OpenUrl",
+                "title": "Quote reply",
+                "url": "https://adaptivecards.io"
+              }
+            ]
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "ActionSet",
+            "actions": [
+              {
+                "type": "Action.OpenUrl",
+                "title": "Add comment",
+                "url": "https://adaptivecards.io"
+              }
+            ]
+          }]
+        }
+      ]
+    }
+  ]
+}
