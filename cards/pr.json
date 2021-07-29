@@ -140,6 +140,34 @@
             "wrap": true,
             "size": "small"
           }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "ActionSet",
+            "actions": [
+              {
+                "type": "Action.OpenUrl",
+                "title": "Merge",
+                "url": "https://adaptivecards.io"
+              }
+            ]
+          }]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [{
+            "type": "ActionSet",
+            "actions": [
+              {
+                "type": "Action.OpenUrl",
+                "title": "Close",
+                "url": "https://adaptivecards.io"
+              }
+            ]
+          }]
         }
       ]
     }
