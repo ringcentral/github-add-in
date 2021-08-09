@@ -1,4 +1,4 @@
-export const releaseTemp = `
+export const commonTemp = `
 {
   "type": "AdaptiveCard",
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -7,7 +7,6 @@ export const releaseTemp = `
     {{title}},
     {{author}}
     {{desc}},
-    {{assets}},
     {{repo}},
     {
       "type": "ColumnSet",

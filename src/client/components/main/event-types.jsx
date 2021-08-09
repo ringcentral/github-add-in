@@ -3,10 +3,14 @@
  */
 
 import classnames from 'classnames'
-import { Tooltip } from 'antd'
+import { useState } from 'react'
+import { Collapse, Tag } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 
-export default (props) => {
+const { Panel } = Collapse
+
+export default function Events (props) {
+  const [count, setCount] = useState(0)
   function renderItem (event) {
     const {
       id,
@@ -20,27 +24,73 @@ export default (props) => {
       }
     )
     return (
-      <Tooltip
+      <div
         key={id}
+        className={cls}
         title={desc}
+        onClick={() => props.onClick(event)}
       >
-        <div
-          className={cls}
-          onClick={() => props.onClick(event)}
-        >
-          <span className='iblock'>{name}</span>
-          <CheckCircleOutlined className='check-icon iblock mg1l' />
-        </div>
-      </Tooltip>
+        <span className='iblock'>{name}</span>
+        <CheckCircleOutlined className='check-icon iblock mg1l' />
+      </div>
     )
   }
+  const tree = props.eventTypes.reduce((p, e) => {
+    const { cat = 'Others' } = e
+    if (!p[cat]) {
+      p[cat] = []
+    }
+    p[cat].push(e)
+    return p
+  }, {})
+  const arr = Object.keys(tree).sort((a, b) => {
+    return a > b ? 1 : -1
+  })
+  function renderPanel (key) {
+    const evts = tree[key]
+    return (
+      <Panel key={key} header={key}>
+        {
+          evts.map(renderItem)
+        }
+      </Panel>
+    )
+  }
+  function onClick () {
+    setCount(old => {
+      let n = old + 1
+      if (n === 3) {
+        props.toggleBeta(true)
+      } else {
+        props.toggleBeta(false)
+      }
+      if (n > 3) {
+        n = 0
+      }
+      return n
+    })
+  }
+  const panel = (
+    <Collapse defaultActiveKey={[arr[0]]}>
+      {
+        arr.map(renderPanel)
+      }
+    </Collapse>
+  )
   return (
     <div className='events-types'>
-      <h2>Select Events ({props.selectedEvents.length} / {props.eventTypes.length})</h2>
-      <div className='events-types-body'>
+      <div className='bold'>
+        <span>Select Events ({props.selectedEvents.length}</span>
+        <span className='mg1x'>/</span>
+        <span onClick={onClick} className='mg1r' data={count}>{props.eventTypes.length})</span>
         {
-          props.eventTypes.map(renderItem)
+          props.beta
+            ? <Tag color='green'>beta</Tag>
+            : null
         }
+      </div>
+      <div className='events-types-body'>
+        {panel}
       </div>
     </div>
   )

@@ -2,35 +2,19 @@
  * routes for github webhooks
  */
 
-import { Webhook } from '../models/webhook'
-import axios from 'axios'
 import _ from 'lodash'
+import webhook2, {
+  getWebhook,
+  postMessage,
+  repositoryEventProps
+} from '../handlers/webhook'
 
-const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
-const GITHUB_ICON_URL = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
-const baseURL = (name) => {
-  return `https://raw.githubusercontent.com/ringcentral/github-notification-app/main/icons/${name}.png`
-}
-const icons = {
-  comment: baseURL('comment'),
-  issue: baseURL('issue-opened'),
-  feedback: baseURL('feedback'),
-  'green-check': baseURL('green-check'),
-  pull: baseURL('pull-request'),
-  push: baseURL('push'),
-  release: baseURL('tag')
-}
-
-const repositoryEventProps = [
-  'action',
-  'repository',
-  'organization',
-  'installation',
-  'sender'
-]
-function formatAction (action) {
-  return action.replace(/_/g, ' ')
-}
+import {
+  FEEDBACK_URL,
+  GITHUB_ICON_URL,
+  icons,
+  formatAction
+} from '../handlers/formatter'
 
 function formStar (body) {
   const action = body.action
@@ -282,10 +266,6 @@ function transform (body) {
   }
 }
 
-function getWebhook (uid) {
-  return Webhook.findByPk(uid)
-}
-
 const webhook = async (req, res) => {
   const {
     id
@@ -304,16 +284,11 @@ const webhook = async (req, res) => {
     res.send('skip')
     return 'skip'
   }
-  const r = await axios.post(wh.rc_webhook, data, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  })
   // console.log('webhook', wh.rc_webhook, r.data)
-  res.send(r.data)
+  res.send(postMessage(wh.rc_webhook, data))
 }
 
 export default (app) => {
   app.post('/gh/webhook/:id', webhook)
+  app.post('/gh/webhook/v2/:id', webhook2)
 }

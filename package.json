@@ -1,6 +1,6 @@
 {
   "name": "glip-integration-github",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "glip-integration-github",
   "keywords": [
     "RingCentral",
@@ -78,6 +78,7 @@
     "express-basic-auth": "^1.2.0",
     "express-jwt": "^6.0.0",
     "glip-integration-js": "^0.2.0",
+    "handlebars": "^4.7.7",
     "jsonwebtoken": "^8.5.1",
     "pug": "^3.0.0",
     "sequelize": "^5.22.3",

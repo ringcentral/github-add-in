@@ -34,7 +34,9 @@ export default function Main (props) {
     currentRepo,
     switchWebhookList,
     handleSwitchFilter,
-    filterWebhook
+    filterWebhook,
+    toggleBeta,
+    beta
   } = props
   if (showList) {
     return (
@@ -68,6 +70,8 @@ export default function Main (props) {
     mod = (
       <Events
         eventTypes={eventTypes}
+        beta={beta}
+        toggleBeta={toggleBeta}
         selectedEvents={selectedEvents}
         onClick={onSelectEvent}
       />
