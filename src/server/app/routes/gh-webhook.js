@@ -285,7 +285,8 @@ const webhook = async (req, res) => {
     return 'skip'
   }
   // console.log('webhook', wh.rc_webhook, r.data)
-  res.send(postMessage(wh.rc_webhook, data))
+  const rr = await postMessage(wh.rc_webhook, data)
+  res.send(rr)
 }
 
 export default (app) => {
