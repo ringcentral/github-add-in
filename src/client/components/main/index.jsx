@@ -30,7 +30,8 @@ export default function Options () {
     loadingOrgs: false,
     loadingRepos: false,
     loadingWebhooks: false,
-    filterWebhook: 'current'
+    filterWebhook: 'current',
+    beta: false
   })
   function setState (update) {
     setStateOrg(old => {
@@ -203,12 +204,16 @@ export default function Options () {
     const { id } = wh
     const orgId = state.currentOrg.login
     const repoId = state.currentRepo.name
-    const url = window.rc.server + '/gh/webhook/' + id
+    const str = state.beta ? 'v2/' : ''
+    const url = window.rc.server + `/gh/webhook/${str}` + id
+    console.log('url', url)
+    console.log('state', state)
     const wh1 = await createGhWebhook(
       orgId,
       repoId,
       url,
-      events
+      events,
+      state.beta
     )
     if (!wh1) {
       setState({
@@ -306,6 +311,9 @@ export default function Options () {
       showList
     })
   }
+  function toggleBeta (beta) {
+    setState({ beta })
+  }
   function nofitfyCanSubmit (status) {
     ref.current.send({ canSubmit: status })
   }
@@ -343,7 +351,13 @@ export default function Options () {
   }, [])
   useEffect(() => {
     handleEvent()
-  }, [state.selectedEvents, state.user, state.currentOrg, state.currentRepo])
+  }, [
+    state.selectedEvents,
+    state.user,
+    state.currentOrg,
+    state.currentRepo,
+    state.beta
+  ])
   const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting || state.loadingUser
   const funcs = {
     fetchWebhooks,
@@ -357,7 +371,8 @@ export default function Options () {
     switchWebhookList,
     delWebhook,
     handleSwitchFilter,
-    logout
+    logout,
+    toggleBeta
   }
   if (state.user.id) {
     return (

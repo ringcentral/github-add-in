@@ -1,4 +1,4 @@
-export const releaseTemp = `
+export const issueTemp = `
 {
   "type": "AdaptiveCard",
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -7,8 +7,8 @@ export const releaseTemp = `
     {{title}},
     {{author}}
     {{desc}},
-    {{assets}},
     {{repo}},
+    {{columnSets}},
     {
       "type": "ColumnSet",
       "columns": [
@@ -18,5 +18,4 @@ export const releaseTemp = `
     }
   ]
 }
-
 `
