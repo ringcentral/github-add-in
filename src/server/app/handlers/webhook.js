@@ -38,9 +38,9 @@ export function postMessage (url, data) {
 }
 
 function transform (body) {
-  console.log('========')
-  console.log(JSON.stringify(body, null, 2))
-  console.log('========')
+  // console.log('========')
+  // console.log(JSON.stringify(body, null, 2))
+  // console.log('========')
   if (body.hook) {
     return formHook(body)
   } else if (body.starred_at) {
@@ -124,13 +124,14 @@ export default async function webhook2 (req, res) {
     return res.send('webhook not exist')
   }
   const data = transform(req.body)
-  // console.log('-----')
-  // console.log(JSON.stringify(data, null, 2))
-  // console.log('-----')
+  console.log('-----')
+  console.log(JSON.stringify(data, null, 2))
+  console.log('-----')
   if (!data) {
     res.send('skip')
     return 'skip'
   }
   // console.log('webhook', wh.rc_webhook, r.data)
-  res.send(postMessage(wh.rc_webhook, data))
+  const x = await postMessage(wh.rc_webhook, data)
+  res.send(x)
 }
