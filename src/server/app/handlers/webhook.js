@@ -123,7 +123,10 @@ export default async function webhook2 (req, res) {
     res.status(404)
     return res.send('webhook not exist')
   }
-  const data = transform(req.body)
+  const data = transform({
+    ...req.body,
+    whId: id
+  })
   // console.log('-----')
   // console.log(JSON.stringify(data, null, 2))
   // console.log('-----')

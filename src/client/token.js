@@ -4,6 +4,6 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './components/test/index.jsx'
+import App from './components/token/index.jsx'
 
 ReactDOM.render(<App />, document.getElementById('container'))
