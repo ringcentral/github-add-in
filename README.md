@@ -77,7 +77,7 @@ More detail: https://github.com/ringcentral/glip-integration-js/blob/master/docs
 
 ## production test
 
-Please join `Github notification app feedback` team in Glip first, then visit url: https://zz9zajn5ok.execute-api.us-east-1.amazonaws.com/prod/app?webhook=https://hooks.glip.com/webhook/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvdCI6InUiLCJvaSI6IjQxNTY5OTg0NTE1IiwiaWQiOiIxMjQ4OTc2OTIzIn0.VhnuikOrzpPjeEwkbmrHe-8AHu5gvgRd3QmYcttZ0OQ
+Please join `Github notification app feedback` team in Glip first, then visit url: https://ringcentral.github.io/ringcentral-notification-app-developer-tool?frameName=my-app&webhook=https://hooks.glip.com/webhook/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvdCI6InUiLCJvaSI6IjQxNTY5OTg0NTE1IiwiaWQiOiIxMTM4Njk2MjE5In0.HP98AByuBQOVt2rVFUATMSCc06HuFdIQ_FiBVXDtLSA&appUrl=https://zz9zajn5ok.execute-api.us-east-1.amazonaws.com/prod/app
 
 ## Test server
 
