@@ -125,27 +125,51 @@ export function formIssue (body) {
   }
 
   let actions = []
+  const n = body.issue.number
   const columns = [
     {
       title: 'Issue #',
-      value: `[${body.issue.number}](${body.issue.html_url})`
+      value: `[${n}](${body.issue.html_url})`
     }
   ]
+  const [owner, repo] = body.repository.full_name.split('/')
+  const commonData = {
+    owner,
+    repo,
+    n,
+    whId: body.whId
+  }
   if (body.comment) {
     actions = [{
+      type: 'Action.OpenUrl',
       title: 'Quote reply',
       url: body.comment.html_url,
       sep: ','
     }, {
+      type: 'Action.OpenUrl',
       title: 'Add comment',
       url: body.comment.html_url
     }]
+  } else if (action === 'closed') {
+    actions = [{
+      type: 'Action.OpenUrl',
+      title: 'Add comment',
+      url: body.issue.html_url
+    }]
+  } else if (action === 'deleted') {
+    actions = []
   } else {
     actions = [{
+      type: 'Action.Submit',
       title: 'Close issue',
-      url: body.issue.html_url,
+      data: parse({
+        ...commonData,
+        actionTitle: 'Close issue',
+        action: 'close-issue'
+      }),
       sep: ','
     }, {
+      type: 'Action.OpenUrl',
       title: 'Add comment',
       url: body.issue.html_url
     }]
@@ -153,7 +177,9 @@ export function formIssue (body) {
   ext.actions = actions
   const all = createCommonProps(body, ext)
   all.columnSets = columnSetsTempRender({ columns })
-  all.actions = actionsTempRender({ actions })
+  all.actions = actions.length
+    ? actionsTempRender({ actions })
+    : ''
   const str = body.comment
     ? commentTempRender(all)
     : issueTempRender(all)
@@ -217,28 +243,35 @@ export function formPr (body) {
     const ref = body.comment || body.review
     actions = [{
       title: 'Quote reply',
+      type: 'Action.OpenUrl',
       url: ref.html_url,
       sep: ','
     }, {
       title: 'Comment',
+      type: 'Action.OpenUrl',
       url: ref.html_url
     }]
   } else if (action === 'closed') {
     actions = [{
       title: 'Comment',
+      type: 'Action.OpenUrl',
       url: body.pull_request.html_url
     }]
   } else {
     actions = [{
       title: 'Close',
+      type: 'Action.OpenUrl',
       url: body.pull_request.html_url,
       sep: ','
-    }, {
+    },
+    /* , {
       title: 'Merge',
       url: body.pull_request.html_url,
       sep: ','
-    }, {
+    }, */
+    {
       title: 'Comment',
+      type: 'Action.OpenUrl',
       url: body.pull_request.html_url
     }]
   }

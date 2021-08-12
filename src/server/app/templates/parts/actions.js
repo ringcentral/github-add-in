@@ -7,9 +7,15 @@ export const actionsTemp = `
     "type": "ActionSet",
     "actions": [
       {
-        "type": "Action.OpenUrl",
+
         "title": "{{title}}",
-        "url": "{{url}}"
+        {{#if url}}
+        "url": "{{url}}",
+        {{/if}}
+        {{#if data}}
+        "data": {{data}},
+        {{/if}}
+        "type": "{{type}}"
       }
     ]
   }]

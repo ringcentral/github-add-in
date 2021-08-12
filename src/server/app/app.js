@@ -9,6 +9,7 @@ import staticRoute from './routes/static'
 import admin from './routes/admin'
 import webhook from './routes/gh-webhook'
 import dbWebhook from './routes/db-webhook'
+import act from './routes/rc-action'
 
 export default function extend (app) {
   const jwtAuth = jwt({
@@ -35,8 +36,10 @@ export default function extend (app) {
   app.get('/logout', logout)
 
   app.get(APP_HOME, viewIndex('app'))
+  app.get('/token', viewIndex('token'))
   app.get('/test-app', viewIndex('test'))
   webhook(app)
   admin(app)
+  act(app)
   dbWebhook(app, jwtAuth)
 }

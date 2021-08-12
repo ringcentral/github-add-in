@@ -5,11 +5,12 @@
 import { OAuthApp } from '@octokit/oauth-app'
 import { Octokit } from '@octokit/core'
 import { Service } from './gh-user'
+import { RCGH } from './rc-gh'
 import _ from 'lodash'
 
 export class User extends Service {}
 
-const SCOPES = 'admin:repo_hook read:user read:org'
+const SCOPES = 'repo read:user read:org'
 
 const initOptions = {
   clientId: process.env.GITHUB_CLIENT_ID,
@@ -50,12 +51,27 @@ User.init = async ({ code, state }) => {
       where
     })
     Object.assign(user, update)
-    return user
+  } else {
+    user = await User.create({
+      id,
+      ...update
+    })
   }
-  user = await User.create({
-    id,
-    ...update
-  })
+  if (state && state.startsWith('uid:')) {
+    const uid = state.replace('uid:', '')
+    const inst = await RCGH.findByPk(uid)
+    if (inst) {
+      user.authToken = inst.token
+      user.verified = inst.verified
+      await RCGH.update({
+        gh_id: user.id
+      }, {
+        where: {
+          id: uid
+        }
+      })
+    }
+  }
   return user
 }
 
