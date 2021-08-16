@@ -5,7 +5,7 @@
 import Sequelize from 'sequelize'
 import sequelize from './sequelize'
 
-export const RCGH = sequelize.define('GithubForGlipIntegrationRCGH', {
+export const Token = sequelize.define('GithubForGlipIntegrationToken', {
   id: { // this is rc extension id
     type: Sequelize.STRING,
     primaryKey: true

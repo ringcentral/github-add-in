@@ -21,7 +21,7 @@ async function run () {
     data: {
       whId: 'GpkXblzzs',
       action: 'auth',
-      token: 'r74c6XRnS'
+      token: 'R31KjpT20apWgGGEVYXpy'
     },
     user: {
       accountId: 'test1',

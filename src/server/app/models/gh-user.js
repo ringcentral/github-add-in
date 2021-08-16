@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize'
-import { generate } from 'shortid'
+import { nanoid as generate } from 'nanoid'
 import sequelize from './sequelize'
 
 export const Service = sequelize.define('GithubForGlipIntegrationUsers', {

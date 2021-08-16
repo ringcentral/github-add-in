@@ -19,10 +19,9 @@ export default async (req, res) => {
     jwtPrefix,
     token,
     authToken: user.authToken,
-    verified: user.verified,
     cdn: RINGCENTRAL_APP_SERVER
   }
-  const view = state.startsWith('uid:')
+  const view = state === 'token-auth'
     ? 'token-auth'
     : 'gh-oauth'
   data._global = copy(data)

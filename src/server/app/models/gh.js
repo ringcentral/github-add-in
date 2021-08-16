@@ -5,7 +5,9 @@
 import { OAuthApp } from '@octokit/oauth-app'
 import { Octokit } from '@octokit/core'
 import { Service } from './gh-user'
-import { RCGH } from './rc-gh'
+import { Token } from './token'
+// import { RCGH } from './rc-gh'
+import { nanoid as generate } from 'nanoid'
 import _ from 'lodash'
 
 export class User extends Service {}
@@ -57,20 +59,13 @@ User.init = async ({ code, state }) => {
       ...update
     })
   }
-  if (state && state.startsWith('uid:')) {
-    const uid = state.replace('uid:', '')
-    const inst = await RCGH.findByPk(uid)
-    if (inst) {
-      user.authToken = inst.token
-      user.verified = inst.verified
-      await RCGH.update({
-        gh_id: user.id
-      }, {
-        where: {
-          id: uid
-        }
-      })
-    }
+  if (state && state === 'token-auth') {
+    const uid = generate()
+    await Token.create({
+      id: uid,
+      gh_id: user.id
+    })
+    user.authToken = uid
   }
   return user
 }

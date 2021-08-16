@@ -1,15 +1,24 @@
 
 import { RCGH } from '../models/rc-gh'
+import { Token } from '../models/token'
 import { User } from '../models/gh'
 import { Webhook } from '../models/webhook'
 import { authTempRender, messageTempRender } from '../handlers/templates'
-import { generate } from 'shortid'
+// import { nanoid as generate } from 'nanoid'
 import parser from '../handlers/string-parser'
 import {
   authUrlDefault,
   defaultState
 } from '../common/constants'
 import { postMessage } from '../handlers/webhook'
+
+function getId (user) {
+  const {
+    id,
+    accountId
+  } = user
+  return `${accountId}-${id}`
+}
 
 async function sendAuthMessage (body) {
   const {
@@ -20,15 +29,11 @@ async function sendAuthMessage (body) {
     whId,
     actionTitle
   } = data
-  const {
-    id,
-    accountId
-  } = user
-  const uid = `${accountId}-${id}`
+  const uid = getId(user)
   const inst = await Webhook.findByPk(whId)
   const url = inst.rc_webhook
   const authUrl = authUrlDefault
-    .replace(defaultState, `uid:${uid}`)
+    .replace(defaultState, 'token-auth')
     .replace(/ /g, encodeURIComponent(' '))
   const title = parser(`This "${actionTitle}" action requires authorization, please ***[click to authorize](${authUrl})***, after authorization you will get a token, paste here and submit, then you can click the "${actionTitle}" button again.`)
   const str = authTempRender({
@@ -43,44 +48,65 @@ async function sendAuthMessage (body) {
       JSON.parse(str)
     ]
   }
-  await RCGH.create({
-    id: uid,
-    token: generate()
-  })
   await postMessage(url, r)
 }
 
-async function auth (inst, data) {
+function expired (inst) {
+  const now = Date.now()
+  const max = 5 * 60 * 1000
+  const d = new Date(inst.updatedAt).getTime()
+  return now - d > max
+}
+
+async function auth (data, user) {
   const { token } = data
-  if (token === inst.token) {
-    await RCGH.update({
-      verified: 1,
-      token: ''
-    }, {
+  if (!token) {
+    return {
+      status: 400,
+      message: 'token required'
+    }
+  }
+  const inst = await Token.findByPk(token)
+  if (!inst) {
+    return {
+      status: 404,
+      message: 'token no match'
+    }
+  } else if (expired(inst)) {
+    await await Token.destroy({
       where: {
         id: inst.id
       }
     })
-    const wh = await Webhook.findByPk(data.whId)
-    const url = wh.rc_webhook
-    const msg = messageTempRender({
-      title: 'Authorization done'
-    })
-    const r = {
-      attachments: [
-        JSON.parse(msg)
-      ]
-    }
-    await postMessage(url, r)
-    return {
-      status: 200,
-      message: 'ok'
-    }
-  } else {
     return {
       status: 400,
-      message: 'error'
+      message: 'token expired'
     }
+  }
+  const id = getId(user)
+  await RCGH.create({
+    id,
+    gh_id: inst.gh_id
+  })
+  await Token.destroy({
+    where: {
+      id: inst.id
+    }
+  })
+  const wh = await Webhook.findByPk(data.whId)
+  const url = wh.rc_webhook
+  const msg = messageTempRender({
+    title: 'Authorization done'
+  })
+  const r = {
+    attachments: [
+      JSON.parse(msg)
+    ]
+  }
+  await postMessage(url, r)
+  return {
+    status: 200,
+    message: 'ok'
   }
 }
 
@@ -138,24 +164,20 @@ async function action (req, res) {
     res.status(400).send('not ok')
     return false
   }
-  const {
-    id,
-    accountId
-  } = req.body.user
-  const rcId = `${accountId}-${id}`
+  const rcId = getId(user)
   const inst = await RCGH.findByPk(rcId)
+  if (data.action === 'auth') {
+    const d = await auth(data, user)
+    return res.status(d.status).send(d.message)
+  }
   if (!inst) {
     await sendAuthMessage(req.body)
     return res.status(404).send('not exist')
   }
-  if (data.action === 'auth') {
-    const d = await auth(inst, data)
-    return res.status(d.status).send(d.message)
-  }
-  if (!inst.verified) {
-    await sendAuthMessage(req.body)
-    return res.send('not authed')
-  }
+  // if (!inst.verified) {
+  //   await sendAuthMessage(req.body)
+  //   return res.send('not authed')
+  // }
   const u = await User.findByPk(inst.gh_id)
   await ghAction(u, req.body)
   res.send('ok')
