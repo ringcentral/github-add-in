@@ -60,7 +60,7 @@ User.init = async ({ code, state }) => {
     })
   }
   if (state && state === 'token-auth') {
-    const uid = generate()
+    const uid = generate(10)
     await Token.create({
       id: uid,
       gh_id: user.id

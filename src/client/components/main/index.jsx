@@ -10,6 +10,7 @@ import copy from 'json-deep-copy'
 import { RingCentralNotificationIntegrationHelper } from 'ringcentral-notification-integration-helper'
 import logoutFunc from '../../common/logout'
 import wait from '../../common/wait'
+import _ from 'lodash'
 import './options.styl'
 
 export default function Options () {
@@ -193,12 +194,22 @@ export default function Options () {
     setState({
       submitting: true
     })
+    const propsArr = ['id', 'login', 'avatar_url', 'html_url']
     const wh = await createDbWebhook({
-      ghWebhookId: '',
+      ghWebhookId: 'none',
       rcWebhook: window.rc.query.webhook,
-      user: state.user.gh_user_info,
-      org: state.currentOrg,
-      repo: state.currentRepo,
+      user: _.pick(
+        state.user.gh_user_info,
+        propsArr
+      ),
+      org: _.pick(
+        state.currentOrg,
+        propsArr
+      ),
+      repo: _.pick(
+        state.currentRepo,
+        ['id', 'full_name', 'name', 'html_url']
+      ),
       events
     })
     const { id } = wh

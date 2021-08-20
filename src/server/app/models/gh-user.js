@@ -6,7 +6,7 @@ export const Service = sequelize.define('GithubForGlipIntegrationUsers', {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,
-    defaultValue: generate
+    defaultValue: () => generate(10)
   },
   gh_user_info: {
     type: Sequelize.JSON

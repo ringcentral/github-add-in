@@ -11,7 +11,7 @@ export async function create (req, res) {
   const {
     body
   } = req
-  const r = await Webhook.create({
+  const obj = {
     gh_user_id: userId,
     ..._.pick(body, [
       'id',
@@ -22,7 +22,9 @@ export async function create (req, res) {
       'gh_repo',
       'gh_events'
     ])
-  })
+  }
+  console.log('obj', obj)
+  const r = await Webhook.create(obj)
   const user = await User.findByPk(userId)
   const webhooks = (user.webhooks || '')
     .split(',')

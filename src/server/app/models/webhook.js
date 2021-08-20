@@ -6,7 +6,7 @@ export const Webhook = sequelize.define('GithubForGlipIntegrationWebhook', {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,
-    defaultValue: generate
+    defaultValue: () => generate(10)
   },
   gh_user_id: {
     type: Sequelize.STRING

@@ -165,11 +165,11 @@ async function action (req, res) {
     return false
   }
   const rcId = getId(user)
-  const inst = await RCGH.findByPk(rcId)
   if (data.action === 'auth') {
     const d = await auth(data, user)
     return res.status(d.status).send(d.message)
   }
+  const inst = await RCGH.findByPk(rcId)
   if (!inst) {
     await sendAuthMessage(req.body)
     return res.status(404).send('not exist')
