@@ -12,6 +12,16 @@ import {
 } from '../common/constants'
 import { postMessage } from '../handlers/webhook'
 
+const states = {
+  open: 'open',
+  closed: 'closed'
+}
+
+const types = {
+  issues: 'issues',
+  pulls: 'issues'
+}
+
 function getId (user) {
   const {
     id,
@@ -39,6 +49,7 @@ async function sendAuthMessage (body) {
   const str = authTempRender({
     title,
     data: parser({
+      action: 'auth',
       whId,
       uid
     })
@@ -95,8 +106,9 @@ async function auth (data, user) {
   })
   const wh = await Webhook.findByPk(data.whId)
   const url = wh.rc_webhook
+  const name = `${data.firstName || ''} ${data.lastName || ''}`
   const msg = messageTempRender({
-    title: 'Authorization done'
+    title: `${name}, your authorization done, you can click the button again now`
   })
   const r = {
     attachments: [
@@ -110,33 +122,26 @@ async function auth (data, user) {
   }
 }
 
-async function closeIssue (user, config) {
-  const url = `/repos/${config.owner}/${config.repo}/issues/${config.n}`
+/**
+ * 
+ * @param {*} user
+ * @param {object} config
+ * @param {string} type pulls or issues
+ * @param {string} state  open or closed
+ * @returns null
+ */
+async function updateIssueOrPr (user, config, type, state) {
+  const url = `/repos/${config.owner}/${config.repo}/${type}/${config.n}`
   return user.gh.request({
     data: {
-      state: 'close'
+      state
     },
     method: 'patch',
     url
   })
     .then(d => d.data)
     .catch(err => {
-      console.error('closeIssue error', err)
-    })
-}
-
-async function closePr (user, config) {
-  const url = `/repos/${config.owner}/${config.repo}/pulls/${config.n}`
-  return user.gh.request({
-    data: {
-      state: 'close'
-    },
-    method: 'patch',
-    url
-  })
-    .then(d => d.data)
-    .catch(err => {
-      console.error('closePr error', err)
+      console.error(`set ${type} ${state} error`, err)
     })
 }
 
@@ -146,16 +151,20 @@ async function ghAction (user, body) {
   } = body
   const { action } = data
   if (action === 'close-issue') {
-    await closeIssue(user, data)
+    await updateIssueOrPr(user, data, types.issues, states.closed)
   } else if (action === 'close-pr') {
-    await closePr(user, data)
+    await updateIssueOrPr(user, data, types.pulls, states.closed)
+  } else if (action === 'reopen-issue') {
+    await updateIssueOrPr(user, data, types.issues, states.open)
+  } else if (action === 'reopen-pr') {
+    await updateIssueOrPr(user, data, types.pulls, states.open)
   }
 }
 
 async function action (req, res) {
-  // console.log('==========')
-  // console.log(req.body)
-  // console.log('==========')
+  console.log('==========')
+  console.log(req.body)
+  console.log('==========')
   const {
     user,
     data
@@ -167,12 +176,13 @@ async function action (req, res) {
   const rcId = getId(user)
   if (data.action === 'auth') {
     const d = await auth(data, user)
-    return res.status(d.status).send(d.message)
+    console.log('d', d)
+    return res.send(d.message)
   }
   const inst = await RCGH.findByPk(rcId)
   if (!inst) {
     await sendAuthMessage(req.body)
-    return res.status(404).send('not exist')
+    return res.status(200).send('not exist')
   }
   // if (!inst.verified) {
   //   await sendAuthMessage(req.body)

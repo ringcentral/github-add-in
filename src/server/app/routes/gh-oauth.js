@@ -12,7 +12,7 @@ export default async (req, res) => {
   const token = jwt.sign({
     id
   }, SERVER_SECRET, { expiresIn: '120y' })
-  const red = extraPath + APP_HOME + '/token'
+  const red = (extraPath + APP_HOME + '/token').replace('//token', '/token')
   const data = {
     redirect: red,
     title: pack.name,

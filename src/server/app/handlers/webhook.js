@@ -123,6 +123,9 @@ export default async function webhook2 (req, res) {
     res.status(404)
     return res.send('webhook not exist')
   }
+  // console.log('-----')
+  // console.log(JSON.stringify(req.body, null, 2))
+  // console.log('-----')
   const data = transform({
     ...req.body,
     whId: id
@@ -136,5 +139,6 @@ export default async function webhook2 (req, res) {
   }
   // console.log('webhook', wh.rc_webhook, r.data)
   const x = await postMessage(wh.rc_webhook, data)
+  // console.log('x', x)
   res.send(x)
 }

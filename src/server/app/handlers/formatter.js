@@ -103,18 +103,19 @@ export function formIssue (body) {
     url = body.comment.html_url
     type = 'comment on '
   }
-  const link = `\\"[${body.issue.title}](${url})\\"`
-  let action = formatAction(body.action)
+  const link = `"[${body.issue.title}](${url})"`
+  const { action } = body
+  let actionNew = formatAction(action)
   let pp = ''
   if (action === 'opened' || action === 'created') {
     pp = 'New '
-    action = ''
+    actionNew = ''
   } else {
-    action = ' ' + action
+    actionNew = ' ' + action
   }
   const ext = {
     icon: body.comment ? icons.comment : icons.issue,
-    title: `${pp}${type}${pre} ${link}${action}`,
+    title: parse(`${pp}${type}${pre} ${link}${actionNew}`),
     actions: []
   }
   if (body.comment) {
@@ -152,6 +153,15 @@ export function formIssue (body) {
     }]
   } else if (action === 'closed') {
     actions = [{
+      type: 'Action.Submit',
+      title: 'Reopen issue',
+      data: parse({
+        ...commonData,
+        actionTitle: 'Reopen issue',
+        action: 'reopen-issue'
+      }),
+      sep: ','
+    }, {
       type: 'Action.OpenUrl',
       title: 'Add comment',
       url: body.issue.html_url
@@ -196,6 +206,7 @@ export function formPr (body) {
   let url = body.pull_request.html_url
   let bodyTitle = ''
   let icon = icons.pull
+  const { action } = body
   let msg = parse(body.pull_request.body || 'No pull request body')
   if (body.comment) {
     url = body.comment.html_url
@@ -210,8 +221,8 @@ export function formPr (body) {
     bodyTitle = 'Review message'
     msg = parse(body.review.body || 'No review body')
   }
-  const link = `\\"[${body.pull_request.title}](${url})\\"`
-  let action = formatAction(body.action)
+  const link = `"[${body.pull_request.title}](${url})"`
+  let actionTxt = formatAction(action)
   let pp = ''
   if (
     action === 'opened' ||
@@ -219,11 +230,11 @@ export function formPr (body) {
     action === 'submitted'
   ) {
     pp = 'New ' + type
-    action = ''
+    actionTxt = ''
   } else {
-    action = ' ' + action
+    actionTxt = ' ' + action
   }
-  const title = `${pp}Pull request ${link}${action}`
+  const title = parse(`${pp}Pull request ${link}${actionTxt}`)
   const ext = {
     icon,
     title,
@@ -238,9 +249,17 @@ export function formPr (body) {
       value: `[${body.pull_request.number}](${body.pull_request.html_url})`
     }
   ]
+  const n = body.pull_request.number
   let actions = []
-  if (body.comment || body.review) {
-    const ref = body.comment || body.review
+  const [owner, repo] = body.repository.full_name.split('/')
+  const commonData = {
+    owner,
+    repo,
+    n,
+    whId: body.whId
+  }
+  const ref = body.comment || body.review
+  if (ref) {
     actions = [{
       title: 'Quote reply',
       type: 'Action.OpenUrl',
@@ -253,22 +272,36 @@ export function formPr (body) {
     }]
   } else if (action === 'closed') {
     actions = [{
+      title: 'Reopen',
+      type: 'Action.Submit',
+      data: parse({
+        ...commonData,
+        actionTitle: 'Reopen',
+        action: 'reopen-pr'
+      }),
+      sep: ','
+    }, {
       title: 'Comment',
       type: 'Action.OpenUrl',
       url: body.pull_request.html_url
     }]
   } else {
     actions = [{
+      type: 'Action.Submit',
       title: 'Close',
+      data: parse({
+        ...commonData,
+        actionTitle: 'Close',
+        action: 'close-pr'
+      }),
+      sep: ','
+    },
+    {
+      title: 'Merge',
       type: 'Action.OpenUrl',
       url: body.pull_request.html_url,
       sep: ','
     },
-    /* , {
-      title: 'Merge',
-      url: body.pull_request.html_url,
-      sep: ','
-    }, */
     {
       title: 'Comment',
       type: 'Action.OpenUrl',
