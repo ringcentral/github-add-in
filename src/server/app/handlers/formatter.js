@@ -13,7 +13,8 @@ import {
   repoTempRender,
   feedbackTempRender,
   titleTempRender,
-  descTempRender
+  descTempRender,
+  commentSetsTempRender
 } from './templates'
 import parse from './string-parser'
 
@@ -140,6 +141,13 @@ export function formIssue (body) {
     n,
     whId: body.whId
   }
+  const commentAction = {
+    type: 'Action.ToggleVisibility',
+    title: 'Add comment',
+    targetElements: parse([
+      'commentSets'
+    ])
+  }
   if (body.comment) {
     actions = [{
       type: 'Action.OpenUrl',
@@ -161,12 +169,8 @@ export function formIssue (body) {
         action: 'reopen-issue'
       }),
       sep: ','
-    }, {
-      type: 'Action.OpenUrl',
-      title: 'Add comment',
-      url: body.issue.html_url
-    }]
-  } else if (action === 'deleted') {
+    }, commentAction]
+  } else if (action === 'deleted' || action === 'locked') {
     actions = []
   } else {
     actions = [{
@@ -178,14 +182,19 @@ export function formIssue (body) {
         action: 'close-issue'
       }),
       sep: ','
-    }, {
-      type: 'Action.OpenUrl',
-      title: 'Add comment',
-      url: body.issue.html_url
-    }]
+    }, commentAction]
   }
+  const commentSetsStr = commentSetsTempRender({
+    hasCommentAction: !!actions.length,
+    data: parse({
+      ...commonData,
+      actionTitle: 'Add Comment',
+      action: 'add-comment'
+    })
+  })
   ext.actions = actions
   const all = createCommonProps(body, ext)
+  all.commentSets = commentSetsStr
   all.columnSets = columnSetsTempRender({ columns })
   all.actions = actions.length
     ? actionsTempRender({ actions })
@@ -193,6 +202,10 @@ export function formIssue (body) {
   const str = body.comment
     ? commentTempRender(all)
     : issueTempRender(all)
+
+  // console.log('-----')
+  // console.log(str)
+  // console.log('-----')
   const r = {
     attachments: [
       JSON.parse(str)

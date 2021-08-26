@@ -5,7 +5,7 @@ export const columnSetsTemp = `
     {{#each columns}}
       {
         "type": "Column",
-        "width": "stretch",
+        "width": "auto",
         "items": [{
           "type": "FactSet",
           "facts": [

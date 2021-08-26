@@ -32,7 +32,7 @@ const viewGhUser = async (req, res) => {
 
 async function update (req, res) {
   const webhooks = await Webhook.findAll()
-  console.log('hooks', webhooks)
+  // console.log('hooks', webhooks)
   const tree = webhooks.reduce((p, w) => {
     const {
       gh_user_id: ghId
@@ -43,18 +43,18 @@ async function update (req, res) {
     p[ghId].push(w.id)
     return p
   }, {})
-  console.log('tree', tree)
+  // console.log('tree', tree)
   const ids = Object.keys(tree)
   for (const id of ids) {
     const webhooks = tree[id].join(',')
-    const r = await User.update({
+    await User.update({
       webhooks
     }, {
       where: {
         id
       }
     })
-    console.log(r)
+    // console.log(r)
   }
   res.send('ok')
 }

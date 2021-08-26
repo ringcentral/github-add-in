@@ -123,7 +123,7 @@ async function auth (data, user) {
 }
 
 /**
- * 
+ * update issues or pr
  * @param {*} user
  * @param {object} config
  * @param {string} type pulls or issues
@@ -145,6 +145,21 @@ async function updateIssueOrPr (user, config, type, state) {
     })
 }
 
+function addComment (user, config) {
+  const url = `/repos/${config.owner}/${config.repo}/issues/${config.n}/comments`
+  return user.gh.request({
+    data: {
+      body: config.commentInput
+    },
+    method: 'post',
+    url
+  })
+    .then(d => d.data)
+    .catch(err => {
+      console.error(`comment on ${config.owner}/${config.repo}/issues/${config.n} error`, err)
+    })
+}
+
 async function ghAction (user, body) {
   const {
     data
@@ -158,13 +173,15 @@ async function ghAction (user, body) {
     await updateIssueOrPr(user, data, types.issues, states.open)
   } else if (action === 'reopen-pr') {
     await updateIssueOrPr(user, data, types.pulls, states.open)
+  } else if (action === 'add-comment') {
+    await addComment(user, data)
   }
 }
 
 async function action (req, res) {
-  console.log('==========')
-  console.log(req.body)
-  console.log('==========')
+  // console.log('==========')
+  // console.log(req.body)
+  // console.log('==========')
   const {
     user,
     data
@@ -176,7 +193,6 @@ async function action (req, res) {
   const rcId = getId(user)
   if (data.action === 'auth') {
     const d = await auth(data, user)
-    console.log('d', d)
     return res.send(d.message)
   }
   const inst = await RCGH.findByPk(rcId)

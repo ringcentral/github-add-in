@@ -16,6 +16,7 @@ export const issueTemp = `
         {{actions}}
       ]
     }
+    {{commentSets}}
   ]
 }
 `

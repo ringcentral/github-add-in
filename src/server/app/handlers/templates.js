@@ -15,6 +15,7 @@ import { titleTemp } from '../templates/parts/title'
 import { descTemp } from '../templates/parts/desc'
 import { authTemp } from '../templates/auth'
 import { messageTemp } from '../templates/message'
+import { commentSetsTemp } from '../templates/parts/comment-sets'
 
 import temp from 'handlebars'
 
@@ -35,3 +36,4 @@ export const titleTempRender = temp.compile(titleTemp, { noEscape: true })
 export const descTempRender = temp.compile(descTemp, { noEscape: true })
 export const authTempRender = temp.compile(authTemp, { noEscape: true })
 export const messageTempRender = temp.compile(messageTemp, { noEscape: true })
+export const commentSetsTempRender = temp.compile(commentSetsTemp, { noEscape: true })
