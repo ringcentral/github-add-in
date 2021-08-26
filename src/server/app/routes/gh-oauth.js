@@ -12,7 +12,10 @@ export default async (req, res) => {
   const token = jwt.sign({
     id
   }, SERVER_SECRET, { expiresIn: '120y' })
-  const red = (extraPath + APP_HOME + '/token').replace('//token', '/token')
+  const isTokenAuth = state === 'token-auth'
+  const red = isTokenAuth
+    ? RINGCENTRAL_APP_SERVER + '/token'
+    : extraPath + APP_HOME + '?webhook=' + state
   const data = {
     redirect: red,
     title: pack.name,
