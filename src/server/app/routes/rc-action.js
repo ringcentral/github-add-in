@@ -106,9 +106,9 @@ async function auth (data, user) {
   })
   const wh = await Webhook.findByPk(data.whId)
   const url = wh.rc_webhook
-  const name = `${data.firstName || ''} ${data.lastName || ''}`
+  // const name = `${data.firstName || ''} ${data.lastName || ''}`
   const msg = messageTempRender({
-    title: `${name}, your authorization done, you can click the button again now`
+    title: 'Your authorization done, you can click the button again now'
   })
   const r = {
     attachments: [
