@@ -12,7 +12,9 @@ export const commentSetsTemp = `
       "placeholder": "Enter comment",
       "maxLength": 500,
       "isMultiline": true,
-      "isRequired": true
+      "isRequired": true,
+      "value": "Write some comment",
+      "errorMessage": "Required"
     },
     {
       "type": "ColumnSet",
