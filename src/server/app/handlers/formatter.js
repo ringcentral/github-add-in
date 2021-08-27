@@ -26,6 +26,11 @@ export const GITHUB_ICON_URL = 'https://github.githubassets.com/images/modules/l
 const baseURL = (name) => {
   return `https://raw.githubusercontent.com/ringcentral/github-notification-app/main/icons_v2/${name}.png`
 }
+const commonEventData = {
+  // activity: 'GitHub event',
+  icon: GITHUB_ICON_URL
+}
+
 export const icons = {
   comment: baseURL('comment'),
   issue: baseURL('issue'),
@@ -87,6 +92,7 @@ export function formRelease (body) {
   // console.log(str)
   // console.log('=====')
   const r = {
+    ...commonEventData,
     // title: `[${title}](${url})`,
     attachments: [
       JSON.parse(str)
@@ -164,7 +170,7 @@ export function formIssue (body) {
       type: 'Action.Submit',
       title: 'Reopen issue',
       data: parse({
-        ...commonData,
+        ...commonEventData,
         actionTitle: 'Reopen issue',
         action: 'reopen-issue'
       }),
@@ -177,7 +183,7 @@ export function formIssue (body) {
       type: 'Action.Submit',
       title: 'Close issue',
       data: parse({
-        ...commonData,
+        ...commonEventData,
         actionTitle: 'Close issue',
         action: 'close-issue'
       }),
@@ -187,7 +193,7 @@ export function formIssue (body) {
   const commentSetsStr = commentSetsTempRender({
     hasCommentAction: !!actions.length,
     data: parse({
-      ...commonData,
+      ...commonEventData,
       actionTitle: 'Add Comment',
       action: 'add-comment'
     })
@@ -207,6 +213,7 @@ export function formIssue (body) {
   // console.log(str)
   // console.log('-----')
   const r = {
+    ...commonEventData,
     attachments: [
       JSON.parse(str)
     ]
@@ -288,7 +295,7 @@ export function formPr (body) {
       title: 'Reopen',
       type: 'Action.Submit',
       data: parse({
-        ...commonData,
+        ...commonEventData,
         actionTitle: 'Reopen',
         action: 'reopen-pr'
       }),
@@ -303,7 +310,7 @@ export function formPr (body) {
       type: 'Action.Submit',
       title: 'Close',
       data: parse({
-        ...commonData,
+        ...commonEventData,
         actionTitle: 'Close',
         action: 'close-pr'
       }),
@@ -332,6 +339,7 @@ export function formPr (body) {
   // console.log(str)
   // console.log('----')
   const r = {
+    ...commonEventData,
     attachments: [
       JSON.parse(str)
     ]
@@ -375,6 +383,7 @@ export function formPush (body) {
   })
   const str = pushTempRender(all)
   const r = {
+    ...commonEventData,
     // title: `[${title}](${url})`,
     attachments: [
       JSON.parse(str)
@@ -443,6 +452,7 @@ function formCommon (body, extend = {}) {
   const props = createCommonProps(body, extend)
   const all = commonTempRender(props)
   const r = {
+    ...commonEventData,
     // title: `[${title}](${url})`,
     attachments: [
       JSON.parse(all)
