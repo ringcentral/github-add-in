@@ -6,9 +6,6 @@ export const authorTemp = `{
       "items": [{
         "type": "Image",
         "url": "{{url}}",
-        "size": "small",
-        "style": "person",
-        "width": "24px",
         "height": "24px"
       }]
     },

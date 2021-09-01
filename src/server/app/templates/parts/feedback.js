@@ -4,8 +4,6 @@ export const feedbackTemp = `{
   "items": [{
     "type": "Image",
     "url": "{{icon}}",
-    "size": "small",
-    "width": "16px",
     "height": "16px"
   }]
 },
