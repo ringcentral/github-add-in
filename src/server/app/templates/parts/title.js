@@ -6,7 +6,6 @@ export const titleTemp = `{
       "items": [{
         "type": "Image",
         "url": "{{iconUrl}}",
-        "style": "person",
         "height": "22px"
       }]
     },

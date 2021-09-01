@@ -1,6 +1,7 @@
 export const feedbackTemp = `{
   "type": "Column",
   "width": "auto",
+  "verticalContentAlignment": "Center",
   "items": [{
     "type": "Image",
     "url": "{{icon}}",
@@ -10,6 +11,7 @@ export const feedbackTemp = `{
 {
   "type": "Column",
   "width": "stretch",
+  "verticalContentAlignment": "Center",
   "items": [{
     "type": "TextBlock",
     "text": "[{{title}}]({{url}})",

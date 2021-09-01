@@ -6,6 +6,7 @@ export const columnSetsTemp = `
       {
         "type": "Column",
         "width": "auto",
+        "verticalContentAlignment": "Center",
         "items": [{
           "type": "FactSet",
           "facts": [

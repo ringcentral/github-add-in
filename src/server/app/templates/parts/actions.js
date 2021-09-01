@@ -3,6 +3,7 @@ export const actionsTemp = `
 {
   "type": "Column",
   "width": "auto",
+  "verticalContentAlignment": "Center",
   "items": [{
     "type": "ActionSet",
     "actions": [

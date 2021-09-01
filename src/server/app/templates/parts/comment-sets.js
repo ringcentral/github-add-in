@@ -22,6 +22,7 @@ export const commentSetsTemp = `
         {
           "type": "Column",
           "width": "auto",
+          "verticalContentAlignment": "Center",
           "items": [
             {
               "type": "ActionSet",
