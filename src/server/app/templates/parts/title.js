@@ -14,7 +14,7 @@ export const titleTemp = `{
     {
       "type": "Column",
       "width": "stretch",
-      "verticalContentAlignment": "Top",
+      "verticalContentAlignment": "Center",
       "items": [{
         "type": "TextBlock",
         "text": "{{title}}",
