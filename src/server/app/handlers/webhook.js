@@ -130,9 +130,9 @@ export default async function webhook2 (req, res) {
     ...req.body,
     whId: id
   })
-  console.log('-----')
-  console.log(JSON.stringify(data, null, 2))
-  console.log('-----')
+  // console.log('-----')
+  // console.log(JSON.stringify(data, null, 2))
+  // console.log('-----')
   if (!data) {
     res.send('skip')
     return 'skip'

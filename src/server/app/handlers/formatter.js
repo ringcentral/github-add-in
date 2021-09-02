@@ -170,6 +170,7 @@ export function formIssue (body) {
       type: 'Action.Submit',
       title: 'Reopen issue',
       data: parse({
+        ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen issue',
         action: 'reopen-issue'
@@ -183,6 +184,7 @@ export function formIssue (body) {
       type: 'Action.Submit',
       title: 'Close issue',
       data: parse({
+        ...commonData,
         ...commonEventData,
         actionTitle: 'Close issue',
         action: 'close-issue'
@@ -193,6 +195,7 @@ export function formIssue (body) {
   const commentSetsStr = commentSetsTempRender({
     hasCommentAction: !!actions.length,
     data: parse({
+      ...commonData,
       ...commonEventData,
       actionTitle: 'Add Comment',
       action: 'add-comment'
@@ -203,7 +206,10 @@ export function formIssue (body) {
   all.commentSets = commentSetsStr
   all.columnSets = columnSetsTempRender({ columns })
   all.actions = actions.length
-    ? actionsTempRender({ actions })
+    ? actionsTempRender({
+      actions,
+      hasActions: true
+    })
     : ''
   const str = body.comment
     ? commentTempRender(all)
@@ -295,6 +301,7 @@ export function formPr (body) {
       title: 'Reopen',
       type: 'Action.Submit',
       data: parse({
+        ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen',
         action: 'reopen-pr'
@@ -310,6 +317,7 @@ export function formPr (body) {
       type: 'Action.Submit',
       title: 'Close',
       data: parse({
+        ...commonData,
         ...commonEventData,
         actionTitle: 'Close',
         action: 'close-pr'
@@ -331,7 +339,10 @@ export function formPr (body) {
   ext.actions = actions
   const all = createCommonProps(body, ext)
   all.columnSets = columnSetsTempRender({ columns })
-  all.actions = actionsTempRender({ actions })
+  all.actions = actionsTempRender({
+    actions,
+    hasActions: !!actions.length
+  })
   const str = body.comment || body.review
     ? commentTempRender(all)
     : prTempRender(all)
@@ -423,6 +434,7 @@ function createCommonProps (body, extend) {
   })
   const actionsStr = extend.actions
     ? actionsTempRender({
+      hasActions: !!(extend.actions && extend.actions.length),
       actions: extend.actions
     })
     : ''

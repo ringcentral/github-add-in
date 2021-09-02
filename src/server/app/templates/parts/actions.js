@@ -1,5 +1,5 @@
 export const actionsTemp = `
-{{#each actions}}
+{{#if hasActions}}
 {
   "type": "Column",
   "width": "auto",
@@ -7,6 +7,7 @@ export const actionsTemp = `
   "items": [{
     "type": "ActionSet",
     "actions": [
+      {{#each actions}}
       {
         "title": "{{title}}",
         {{#if url}}
@@ -19,9 +20,10 @@ export const actionsTemp = `
         "targetElements": {{targetElements}},
         {{/if}}
         "type": "{{type}}"
-      }
+      }{{sep}}
+      {{/each}}
     ]
   }]
-}{{sep}}
-{{/each}}
+}
+{{/if}}
 `
