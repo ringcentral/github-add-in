@@ -147,12 +147,18 @@ export function formIssue (body) {
     n,
     whId: body.whId
   }
+  const card = commentSetsTempRender({
+    data: parse({
+      ...commonData,
+      ...commonEventData,
+      actionTitle: 'Add Comment',
+      action: 'add-comment'
+    })
+  })
   const commentAction = {
-    type: 'Action.ToggleVisibility',
+    type: 'Action.ShowCard',
     title: 'Add comment',
-    targetElements: parse([
-      'commentSets'
-    ])
+    card
   }
   if (body.comment) {
     actions = [{
@@ -192,18 +198,9 @@ export function formIssue (body) {
       sep: ','
     }, commentAction]
   }
-  const commentSetsStr = commentSetsTempRender({
-    hasCommentAction: !!actions.length,
-    data: parse({
-      ...commonData,
-      ...commonEventData,
-      actionTitle: 'Add Comment',
-      action: 'add-comment'
-    })
-  })
+
   ext.actions = actions
   const all = createCommonProps(body, ext)
-  all.commentSets = commentSetsStr
   all.columnSets = columnSetsTempRender({ columns })
   all.actions = actions.length
     ? actionsTempRender({
@@ -268,7 +265,6 @@ export function formPr (body) {
     body: msg,
     actions: []
   }
-
   const columns = [
     {
       title: 'Pull request #',

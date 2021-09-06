@@ -16,6 +16,9 @@ export const actionsTemp = `
         {{#if data}}
         "data": {{data}},
         {{/if}}
+        {{#if card}}
+        "card": {{card}},
+        {{/if}}
         {{#if targetElements}}
         "targetElements": {{targetElements}},
         {{/if}}

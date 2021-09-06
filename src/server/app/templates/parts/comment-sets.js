@@ -1,11 +1,7 @@
 export const commentSetsTemp = `
-{{#if hasCommentAction}}
-,
 {
-  "type": "Container",
-  "id": "commentSets",
-  "isVisible": false,
-  "items": [
+  "type": "AdaptiveCard",
+  "body": [
     {
       "type": "Input.Text",
       "id": "commentInput",
@@ -13,7 +9,6 @@ export const commentSetsTemp = `
       "maxLength": 500,
       "isMultiline": true,
       "isRequired": true,
-      "value": "Write some comment",
       "errorMessage": "Required"
     },
     {
@@ -28,13 +23,6 @@ export const commentSetsTemp = `
               "type": "ActionSet",
               "actions": [
                 {
-                  "type": "Action.ToggleVisibility",
-                  "title": "Cancel",
-                  "targetElements": [
-                    "commentSets"
-                  ]
-                },
-                {
                   "type": "Action.Submit",
                   "title": "Submit",
                   "data": {{data}}
@@ -47,6 +35,4 @@ export const commentSetsTemp = `
     }
   ]
 }
-
-{{/if}}
 `
