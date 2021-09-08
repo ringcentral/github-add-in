@@ -17,7 +17,7 @@ import {
   commentSetsTempRender
 } from './templates'
 import parse from './string-parser'
-
+import copy from 'json-deep-copy'
 import _ from 'lodash'
 
 export const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
@@ -101,6 +101,13 @@ export function formRelease (body) {
   return r
 }
 
+function markdownQuote (txt) {
+  const res = txt.split('\n').map(t => {
+    return '> ' + t
+  }).join('\n') + '\n'
+  return parse(res)
+}
+
 export function formIssue (body) {
   let url = body.issue.html_url
   let type = ''
@@ -147,30 +154,33 @@ export function formIssue (body) {
     n,
     whId: body.whId
   }
-  const card = commentSetsTempRender({
+  const cardProps = {
     data: parse({
       ...commonData,
       ...commonEventData,
       actionTitle: 'Add Comment',
       action: 'add-comment'
     })
-  })
+  }
+  const card = commentSetsTempRender(cardProps)
   const commentAction = {
     type: 'Action.ShowCard',
     title: 'Add comment',
     card
   }
   if (body.comment) {
-    actions = [{
-      type: 'Action.OpenUrl',
+    const cardProps2 = {
+      ...copy(cardProps),
+      value: markdownQuote(body.comment.body)
+    }
+    const card2 = commentSetsTempRender(cardProps2)
+    const commentAction2 = {
+      ...copy(commentAction),
       title: 'Quote reply',
-      url: body.comment.html_url,
+      card: card2,
       sep: ','
-    }, {
-      type: 'Action.OpenUrl',
-      title: 'Add comment',
-      url: body.comment.html_url
-    }]
+    }
+    actions = [commentAction2, commentAction]
   } else if (action === 'closed') {
     actions = [{
       type: 'Action.Submit',

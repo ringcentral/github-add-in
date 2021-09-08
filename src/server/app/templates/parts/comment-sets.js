@@ -9,6 +9,9 @@ export const commentSetsTemp = `
       "maxLength": 500,
       "isMultiline": true,
       "isRequired": true,
+      {{#if value}}
+      "value": "{{value}}",
+      {{/if}}
       "errorMessage": "Required"
     },
     {
