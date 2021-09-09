@@ -278,7 +278,17 @@ export function formPr (body) {
   const columns = [
     {
       title: 'Pull request #',
-      value: `[${body.pull_request.number}](${body.pull_request.html_url})`
+      value: `[${body.pull_request.number}](${body.pull_request.html_url})`,
+      sep: ','
+    },
+    {
+      sep: ',',
+      title: 'Files changed',
+      value: `${body.pull_request.changed_files}`
+    },
+    {
+      title: 'Commits',
+      value: `${body.pull_request.commits}`
     }
   ]
   const n = body.pull_request.number
