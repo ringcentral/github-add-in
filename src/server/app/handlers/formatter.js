@@ -275,20 +275,21 @@ export function formPr (body) {
     body: msg,
     actions: []
   }
+  const htmlUrl = body.pull_request.html_url
   const columns = [
     {
       title: 'Pull request #',
-      value: `[${body.pull_request.number}](${body.pull_request.html_url})`,
+      value: `[${body.pull_request.number}](${htmlUrl})`,
       sep: ','
     },
     {
       sep: ',',
       title: 'Files changed',
-      value: `${body.pull_request.changed_files}`
+      value: `[${body.pull_request.changed_files}](${htmlUrl}/files)`
     },
     {
       title: 'Commits',
-      value: `${body.pull_request.commits}`
+      value: `[${body.pull_request.commits}](${htmlUrl}/commits)`
     }
   ]
   const n = body.pull_request.number
