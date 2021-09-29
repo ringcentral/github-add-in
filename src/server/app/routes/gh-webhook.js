@@ -290,6 +290,6 @@ const webhook = async (req, res) => {
 }
 
 export default (app) => {
-  app.post('/gh/webhook/:id', webhook)
+  app.post('/gh/webhook/:id', webhook2)
   app.post('/gh/webhook/v2/:id', webhook2)
 }
