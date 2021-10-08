@@ -299,20 +299,37 @@ export function formPr (body) {
     owner,
     repo,
     n,
-    whId: body.whId
+    whId: body.whId,
+    type: ''
+  }
+  const cardProps = {
+    data: parse({
+      ...commonData,
+      ...commonEventData,
+      actionTitle: 'Add Comment',
+      action: 'add-comment-pr'
+    })
+  }
+  const card = commentSetsTempRender(cardProps)
+  const commentAction = {
+    type: 'Action.ShowCard',
+    title: 'Add comment',
+    card
   }
   const ref = body.comment || body.review
   if (ref) {
-    actions = [{
+    const cardProps2 = {
+      ...copy(cardProps),
+      value: markdownQuote(body.comment.body)
+    }
+    const card2 = commentSetsTempRender(cardProps2)
+    const commentAction2 = {
+      ...copy(commentAction),
       title: 'Quote reply',
-      type: 'Action.OpenUrl',
-      url: ref.html_url,
+      card: card2,
       sep: ','
-    }, {
-      title: 'Comment',
-      type: 'Action.OpenUrl',
-      url: ref.html_url
-    }]
+    }
+    actions = [commentAction2, commentAction]
   } else if (action === 'closed') {
     actions = [{
       title: 'Reopen',
@@ -324,11 +341,9 @@ export function formPr (body) {
         action: 'reopen-pr'
       }),
       sep: ','
-    }, {
-      title: 'Comment',
-      type: 'Action.OpenUrl',
-      url: body.pull_request.html_url
-    }]
+    }, commentAction]
+  } else if (action === 'deleted' || action === 'locked') {
+    actions = []
   } else {
     actions = [{
       type: 'Action.Submit',
@@ -341,17 +356,7 @@ export function formPr (body) {
       }),
       sep: ','
     },
-    {
-      title: 'Merge',
-      type: 'Action.OpenUrl',
-      url: body.pull_request.html_url,
-      sep: ','
-    },
-    {
-      title: 'Comment',
-      type: 'Action.OpenUrl',
-      url: body.pull_request.html_url
-    }]
+    commentAction]
   }
   ext.actions = actions
   const all = createCommonProps(body, ext)

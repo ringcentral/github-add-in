@@ -145,7 +145,7 @@ async function updateIssueOrPr (user, config, type, state) {
     })
 }
 
-function addComment (user, config) {
+function addComment (user, config, type = 'issues') {
   const url = `/repos/${config.owner}/${config.repo}/issues/${config.n}/comments`
   return user.gh.request({
     data: {
@@ -156,7 +156,7 @@ function addComment (user, config) {
   })
     .then(d => d.data)
     .catch(err => {
-      console.error(`comment on ${config.owner}/${config.repo}/issues/${config.n} error`, err)
+      console.error(`comment on ${config.owner}/${config.repo}/${type}/${config.n} error`, err)
     })
 }
 
@@ -174,7 +174,9 @@ async function ghAction (user, body) {
   } else if (action === 'reopen-pr') {
     await updateIssueOrPr(user, data, types.pulls, states.open)
   } else if (action === 'add-comment') {
-    await addComment(user, data)
+    await addComment(user, data, types.issues)
+  } else if (action === 'add-comment-pr') {
+    await addComment(user, data, types.pulls)
   }
 }
 
