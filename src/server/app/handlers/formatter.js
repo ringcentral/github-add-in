@@ -155,12 +155,12 @@ export function formIssue (body) {
     whId: body.whId
   }
   const cardProps = {
+    id: 'githubCommentInput1',
     data: parse({
       ...commonData,
       ...commonEventData,
       actionTitle: 'Add Comment',
-      action: 'add-comment',
-      id: 'githubCommentInput1'
+      action: 'add-comment'
     })
   }
   const card = commentSetsTempRender(cardProps)
@@ -305,12 +305,12 @@ export function formPr (body) {
     type: ''
   }
   const cardProps = {
+    id: 'githubCommentInput1',
     data: parse({
       ...commonData,
       ...commonEventData,
       actionTitle: 'Add Comment',
-      action: 'add-comment-pr',
-      id: 'githubCommentInput1'
+      action: 'add-comment-pr'
     })
   }
   const card = commentSetsTempRender(cardProps)
