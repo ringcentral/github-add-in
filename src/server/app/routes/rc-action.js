@@ -149,7 +149,7 @@ function addComment (user, config, type = 'issues') {
   const url = `/repos/${config.owner}/${config.repo}/issues/${config.n}/comments`
   return user.gh.request({
     data: {
-      body: config.commentInput
+      body: config.githubCommentInput1 || config.githubCommentInput2 || config.commentInput
     },
     method: 'post',
     url

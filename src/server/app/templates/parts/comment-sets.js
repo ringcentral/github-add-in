@@ -4,7 +4,7 @@ export const commentSetsTemp = `
   "body": [
     {
       "type": "Input.Text",
-      "id": "commentInput",
+      "id": "{{id}}",
       "placeholder": "Enter comment",
       "maxLength": 500,
       "isMultiline": true,

@@ -159,7 +159,8 @@ export function formIssue (body) {
       ...commonData,
       ...commonEventData,
       actionTitle: 'Add Comment',
-      action: 'add-comment'
+      action: 'add-comment',
+      id: 'githubCommentInput1'
     })
   }
   const card = commentSetsTempRender(cardProps)
@@ -171,6 +172,7 @@ export function formIssue (body) {
   if (body.comment) {
     const cardProps2 = {
       ...copy(cardProps),
+      id: 'githubCommentInput2',
       value: markdownQuote(body.comment.body)
     }
     const card2 = commentSetsTempRender(cardProps2)
@@ -307,7 +309,8 @@ export function formPr (body) {
       ...commonData,
       ...commonEventData,
       actionTitle: 'Add Comment',
-      action: 'add-comment-pr'
+      action: 'add-comment-pr',
+      id: 'githubCommentInput1'
     })
   }
   const card = commentSetsTempRender(cardProps)
@@ -320,6 +323,7 @@ export function formPr (body) {
   if (ref) {
     const cardProps2 = {
       ...copy(cardProps),
+      id: 'githubCommentInput2',
       value: markdownQuote(body.comment.body)
     }
     const card2 = commentSetsTempRender(cardProps2)
