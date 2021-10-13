@@ -3,14 +3,12 @@
  */
 
 import classnames from 'classnames'
-import { useState } from 'react'
-import { Collapse, Tag } from 'antd'
+import { Collapse } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 
 const { Panel } = Collapse
 
 export default function Events (props) {
-  const [count, setCount] = useState(0)
   function renderItem (event) {
     const {
       id,
@@ -56,20 +54,6 @@ export default function Events (props) {
       </Panel>
     )
   }
-  function onClick () {
-    setCount(old => {
-      let n = old + 1
-      if (n === 3) {
-        props.toggleBeta(true)
-      } else {
-        props.toggleBeta(false)
-      }
-      if (n > 3) {
-        n = 0
-      }
-      return n
-    })
-  }
   const panel = (
     <Collapse defaultActiveKey={[arr[0]]}>
       {
@@ -82,12 +66,7 @@ export default function Events (props) {
       <div className='bold'>
         <span>Select Events ({props.selectedEvents.length}</span>
         <span className='mg1x'>/</span>
-        <span onClick={onClick} className='mg1r' data={count}>{props.eventTypes.length})</span>
-        {
-          props.beta
-            ? <Tag color='green'>beta</Tag>
-            : null
-        }
+        <span className='mg1r'>{props.eventTypes.length})</span>
       </div>
       <div className='events-types-body'>
         {panel}

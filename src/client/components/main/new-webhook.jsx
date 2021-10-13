@@ -36,16 +36,30 @@ export default function Main (props) {
     handleSwitchFilter,
     filterWebhook,
     toggleBeta,
-    beta
+    beta,
+    showEditWebhook,
+    webhookEdit,
+    loading
   } = props
   if (showList) {
+    const listProps = {
+      updateWebhook: props.updateWebhook,
+      hideEditWebhook: props.hideEditWebhook,
+      visible: !!props.webhookEdit,
+      webhookEdit,
+      webhook: props.webhookEdit,
+      eventTypes: props.eventTypes,
+      delWebhook,
+      webhooks,
+      showEditWebhook,
+      loading,
+      filterWebhook,
+      handleSwitchFilter,
+      switchWebhookList
+    }
     return (
       <List
-        delWebhook={delWebhook}
-        webhooks={webhooks}
-        filterWebhook={filterWebhook}
-        handleSwitchFilter={handleSwitchFilter}
-        switchWebhookList={switchWebhookList}
+        {...listProps}
       />
     )
   }

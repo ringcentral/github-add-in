@@ -23,7 +23,6 @@ export async function create (req, res) {
       'gh_events'
     ])
   }
-  console.log('obj', obj)
   const r = await Webhook.create(obj)
   const user = await User.findByPk(userId)
   const webhooks = (user.webhooks || '')

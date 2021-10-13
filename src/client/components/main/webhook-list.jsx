@@ -6,9 +6,10 @@
  * ui module for repo select
  */
 
-import { CloseCircleOutlined } from '@ant-design/icons'
+import { CloseCircleOutlined, EditOutlined } from '@ant-design/icons'
 import { Tag, Popconfirm, List, Button, Radio } from 'antd'
 import eventsList from '../../common/github-events'
+import WebhookEdit from './edit-webhook'
 
 const { Item } = List
 const arr = eventsList()
@@ -34,6 +35,11 @@ export default function WebhookList (props) {
       <Item
         key={id}
         actions={[
+          <EditOutlined
+            className='pointer edit-webhook-icon'
+            key='edit-item-conf'
+            onClick={() => props.showEditWebhook(item)}
+          />,
           <Popconfirm
             title='Are you sure about deleting this?'
             onConfirm={() => props.delWebhook(item)}
@@ -71,6 +77,13 @@ export default function WebhookList (props) {
       label: 'All'
     }
   ]
+  const listProps = {
+    updateWebhook: props.updateWebhook,
+    hideEditWebhook: props.hideEditWebhook,
+    visible: !!props.webhookEdit,
+    webhook: props.webhookEdit,
+    eventTypes: props.eventTypes
+  }
   const data = props.filterWebhook === 'all'
     ? props.webhooks
     : props.webhooks.filter(d => {
@@ -106,6 +119,9 @@ export default function WebhookList (props) {
           />
         </div>
       </div>
+      <WebhookEdit
+        {...listProps}
+      />
     </div>
   )
 }

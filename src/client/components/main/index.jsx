@@ -4,7 +4,7 @@ import Entry from './entry'
 import NewWebhook from './new-webhook'
 import fetchUser from '../../common/get-user'
 import { Spin, Modal, notification } from 'antd'
-import { getOrgs, getRepos, createGhWebhook, delGhWebhook } from './gh-apis'
+import { getOrgs, getRepos, createGhWebhook, delGhWebhook, updateGhWebhook } from './gh-apis'
 import { listDbWebhook, createDbWebhook, updateDbWebhook, delDbWebhook } from './db-apis'
 import copy from 'json-deep-copy'
 import { RingCentralNotificationIntegrationHelper } from 'ringcentral-notification-integration-helper'
@@ -32,7 +32,8 @@ export default function Options () {
     loadingRepos: false,
     loadingWebhooks: false,
     filterWebhook: 'current',
-    beta: false
+    beta: false,
+    webhookEdit: null
   })
   function setState (update) {
     setStateOrg(old => {
@@ -92,11 +93,11 @@ export default function Options () {
   }
   async function fetchWebhooks (firstTime) {
     setState({
-      loadingWebhook: true
+      loadingWebhooks: true
     })
     const arr = await listDbWebhook()
     const up = {
-      loadingWebhook: false
+      loadingWebhooks: false
     }
     if (arr) {
       up.webhooks = arr
@@ -105,6 +106,26 @@ export default function Options () {
     if (firstTime) {
       checkMatchedWebhook(arr)
     }
+  }
+  async function updateWebhook (wh, events) {
+    setState({
+      webhookEdit: null,
+      loadingWebhooks: true
+    })
+    const up = {
+      loadingWebhooks: false
+    }
+    const a = await updateDbWebhook({
+      id: wh.id,
+      update: {
+        gh_events: events.join(',')
+      }
+    })
+    if (a) {
+      await updateGhWebhook(wh.gh_org.login, wh.gh_repo.name, wh.gh_webhook_id, events)
+    }
+    setState(up)
+    await fetchWebhooks()
   }
 
   async function checkMatchedWebhook (webhooks) {
@@ -295,6 +316,16 @@ export default function Options () {
       })
     }
   }
+  function showEditWebhook (wh) {
+    setState({
+      webhookEdit: wh
+    })
+  }
+  function hideEditWebhook () {
+    setState({
+      webhookEdit: null
+    })
+  }
   async function delWebhook (wh) {
     setState({
       submitting: true
@@ -321,9 +352,6 @@ export default function Options () {
     setState({
       showList
     })
-  }
-  function toggleBeta (beta) {
-    setState({ beta })
   }
   function nofitfyCanSubmit (status) {
     ref.current.send({ canSubmit: status })
@@ -379,11 +407,13 @@ export default function Options () {
     onClickRepo,
     onStepChange,
     onSelectEvent,
+    showEditWebhook,
+    hideEditWebhook,
+    updateWebhook,
     switchWebhookList,
     delWebhook,
     handleSwitchFilter,
-    logout,
-    toggleBeta
+    logout
   }
   if (state.user.id) {
     return (
