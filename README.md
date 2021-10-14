@@ -1,29 +1,31 @@
 
-# glip-integration-github
+# Github add-in for RingCentral app
 
-Github integration for Glip team messaging.
+## Use
 
-CI: https://xrs04-c01-utl11.lab.nordigy.ru/view/glip-integration-apps/job/glip-integration-github/
+Goto RingCentral Apps -> Notification apps list, find and click GitHub add-in, just follow the instructions.
 
 ## YouTube video
 
 [https://youtu.be/qL-7b03U1ow](https://youtu.be/qL-7b03U1ow)
 
-## Use
-
-Goto Glip app list, find and click GitHub, just follow the instructions.
-
 ## DEV Prerequisites
 
 - Download and install RingCentral app and login: https://www.ringcentral.com/apps/rc-app
 - Nodejs 8.10+/npm, recommend using [nvm](https://github.com/creationix/nvm) to install nodejs/npm.
-- If you want to create RingCentral Glip integration that can show in RingCentral Glip apps list, you need a RingCentral developer account that can create Glip integration: you need [sign up](https://developers.ringcentral.com/) and apply for the permission to create Glip integration.
+- Create a GitHub oauth app in your github account, required scopes: `admin:repo_hook read:user read:org`
+- Create a AWS account, we will use free AWS dynamodb, and put your aws credentials in `~/.aws/credentials`, check [https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
+- To get a sense how would it work, you can use GitHub 2.0 integration in RingCentral app's App list, check the video: [https://youtu.be/qL-7b03U1ow](https://youtu.be/qL-7b03U1ow)
 
 ## Quick start
 
-Let's start a simple RingCentral Glip integration that post github messages to a Glip team you selected.
+Let's start a simple RingCentral add-in that post github messages to a RingCentral team you selected.
 
 ```bash
+
+# get code
+git clone git@github.com:ringcentral/github-add-in.git
+cd github-add-in
 
 # install dependecies
 npm i
@@ -36,30 +38,35 @@ Forwarding                    https://xxxx.ap.ngrok.io -> localhost:6066
 # Remember the https://xxxx.ap.ngrok.io, we will use it later
 ```
 
-Goto Glip app's App list, select **Webhook** app, and choose a team, and copy the glip webhook url for later use, and confirm install.
+Goto RingCentral app's App list, select [Incoming WebHooks](https://www.ringcentral.com/apps/glip-webhooks) app, and choose a team, and copy the `glip webhook url` for later test use, and confirm install.
 
 ```bash
 # create env file
 cp .env.sample .env
 # then edit .env,
 # set https://xxxx.ap.ngrok.io as RINGCENTRAL_APP_SERVER
-# set glip webhook url copied as STATIC_WEBHOOK
-# set GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET (by create github oauth app)
-
-# start dynamodb local
-npm run dynamo
+# set GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET (from github oauth app you created)
 
 # run local dev server
 npm start
 
-# run client
+# run client in another terminal
 npm run c
-
-# then visit https://xxxx.ap.ngrok.io
-
-# test adaptive cards, change name to file name in cards folder
-NAME=release node cmds/test.js
 ```
+
+Then visit [ringcentral-notification-app-developer-tool](https://ringcentral.github.io/ringcentral-notification-app-developer-tool/)
+
+- `App url` : Use `https://xxxx.ap.ngrok.io` we started
+- `Webhook Url`: Use `glip webhook url` we copied from prev step
+
+Then click submit, this will simulate the situation running in real RingCentral app, just try it~
+
+Then you can edit src files and play with the project.
+
+## Links
+
+- [Framework to help creating notification apps](https://github.com/ringcentral/ringcentral-add-in-framework-js)
+- [Helper module to handle communication with RingCentral app](https://github.com/ringcentral/ringcentral-notification-integration-helper)
 
 ## Deploy to AWS Lambda
 
@@ -75,13 +82,6 @@ npm run deploy
 
 More detail: https://github.com/ringcentral/glip-integration-js/blob/master/docs/deploy-to-lambda.md
 
-## production test
+## License
 
-Please join `Github notification app feedback` team in Glip first, then visit url: https://ringcentral.github.io/ringcentral-notification-app-developer-tool?frameName=my-app&webhook=https://hooks.glip.com/webhook/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvdCI6InUiLCJvaSI6IjQxNTY5OTg0NTE1IiwiaWQiOiIxMTM4Njk2MjE5In0.HP98AByuBQOVt2rVFUATMSCc06HuFdIQ_FiBVXDtLSA&appUrl=https://zz9zajn5ok.execute-api.us-east-1.amazonaws.com/prod/app
-
-
-https://proxy3.html5beta.com?frameName=my-app&webhook=https://hooks.ringcentral.com/webhook/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvdCI6InUiLCJvaSI6IjQxNTY5OTg0NTE1IiwiaWQiOiIxMzgwODY4MTIzIn0.zRdcD04mZ45k5e6iqhKPHe3KBUj0VHba3r5h2tsEwL8
-
-## Test server
-
-https://ro6qlh1r07.execute-api.us-east-1.amazonaws.com/prod/app
+MIT
