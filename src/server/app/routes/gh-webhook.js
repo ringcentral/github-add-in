@@ -280,9 +280,9 @@ export const webhook = async (req, res) => {
     return res.send('webhook not exist')
   }
   const data = transform(req.body)
-  console.log('-----')
-  console.log(JSON.stringify(data, null, 2))
-  console.log('-----')
+  // console.log('-----')
+  // console.log(JSON.stringify(data, null, 2))
+  // console.log('-----')
   if (!data) {
     res.send('skip')
     return 'skip'
