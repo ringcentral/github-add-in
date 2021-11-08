@@ -48,6 +48,7 @@ async function sendAuthMessage (body) {
   const title = parser(`This "${actionTitle}" action requires authorization, please ***[click to authorize](${authUrl})***, after authorization you will get a token, paste here and submit, then you can click the "${actionTitle}" button again.`)
   const str = authTempRender({
     title,
+    fallbackText: 'Please authorize',
     data: parser({
       action: 'auth',
       whId,
@@ -107,8 +108,10 @@ async function auth (data, user) {
   const wh = await Webhook.findByPk(data.whId)
   const url = wh.rc_webhook
   // const name = `${data.firstName || ''} ${data.lastName || ''}`
+  const title = 'Your authorization done, you can click the button again now'
   const msg = messageTempRender({
-    title: 'Your authorization done, you can click the button again now'
+    title,
+    fallbackText: title
   })
   const r = {
     attachments: [

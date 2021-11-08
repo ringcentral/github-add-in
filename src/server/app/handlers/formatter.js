@@ -51,8 +51,10 @@ export function formStar (body) {
     created: 'New Star!',
     deleted: 'Lost a star'
   }
+  const title = map[action]
   const ext = {
-    title: map[action]
+    title,
+    fallbackText: title
   }
   return formCommon(body, ext)
 }
@@ -68,6 +70,7 @@ export function formRelease (body) {
     bodyTitle: 'Release Note',
     body: parse(`${body.release.body || 'No release note'}`)
   }
+  const fallbackText = `New release: ${body.release.tag_name}`
   const all = createCommonProps(body, ext)
   const assetsAll = (body.release.assets || [])
     .map(d => {
@@ -87,6 +90,7 @@ export function formRelease (body) {
     assets: parse(assets),
     assetsMore: parse(assetsMore)
   })
+  all.fallbackText = fallbackText
   const str = releaseTempRender(all)
   // console.log('=====')
   // console.log(str)
@@ -132,6 +136,7 @@ export function formIssue (body) {
     title: parse(`${pp}${type}${pre} ${link}${actionNew}`),
     actions: []
   }
+  const fallbackText = parse(`${pp}${type}${pre} "${body.issue.title}"${actionNew}`)
   if (body.comment) {
     ext.body = parse(body.comment.body)
     ext.bodyTitle = 'Comment'
@@ -213,6 +218,7 @@ export function formIssue (body) {
 
   ext.actions = actions
   const all = createCommonProps(body, ext)
+  all.fallbackText = fallbackText
   all.columnSets = columnSetsTempRender({ columns })
   all.actions = actions.length
     ? actionsTempRender({
@@ -270,6 +276,7 @@ export function formPr (body) {
     actionTxt = ' ' + action
   }
   const title = parse(`${pp}Pull request ${link}${actionTxt}`)
+  const fallbackText = parse(`${pp}Pull request "${body.pull_request.title}"${actionTxt}`)
   const ext = {
     icon,
     title,
@@ -369,6 +376,7 @@ export function formPr (body) {
     actions,
     hasActions: !!actions.length
   })
+  all.fallbackText = fallbackText
   const str = body.comment || body.review
     ? commentTempRender(all)
     : prTempRender(all)
@@ -385,8 +393,10 @@ export function formPr (body) {
 }
 
 export function formHook (body) {
+  const title = 'New GitHub Webhook Created'
   const ext = {
-    title: 'New GitHub Webhook Created',
+    title,
+    fallbackText: title,
     body: `Events: ${body.hook.events.join(', ')}`
   }
 
@@ -398,9 +408,12 @@ function commitRender (c) {
 }
 
 export function formPush (body) {
-  const msg = _.get(body, 'commits[0].message')
+  const msg = parse(_.get(body, 'commits[0].message'))
   const titleStr = msg
     ? `: \\"[${msg}](${body.compare})\\"`
+    : ''
+  const title = msg
+    ? `: \\"${msg}\\"`
     : ''
   const ext = {
     icon: icons.push,
@@ -408,6 +421,7 @@ export function formPush (body) {
     bodyTitle: 'Push message'
   }
   const all = createCommonProps(body, ext)
+  all.fallbackText = `New Push${title}`
   const commits = body.commits.slice(0, 3).map(commitRender).join('\n')
   let moreCommits = null
   if (body.commits.length > 3) {
@@ -441,6 +455,7 @@ export function formAct (title, body, linkProp, actProp = 'action') {
     ? `[${title}](${link})`
     : title
   const ext = {
+    fallbackText: `New event: ${title}${action}`,
     title: `New event: ${titleStr}${action}`
   }
   return formCommon(body, ext)
@@ -467,6 +482,7 @@ function createCommonProps (body, extend) {
   return {
     desc,
     title: titleStr,
+    fallbackText: extend.fallbackText,
     actions: actionsStr,
     repo: repoTempRender({
       name: body.repository.full_name,
@@ -486,7 +502,7 @@ function createCommonProps (body, extend) {
   }
 }
 
-function formCommon (body, extend = {}) {
+export function formCommon (body, extend = {}) {
   const props = createCommonProps(body, extend)
   const all = commonTempRender(props)
   const r = {
