@@ -25,7 +25,7 @@ export default (view) => {
     res.set({
       'Cache-Control': 'no-cache'
     })
-    const query = req.query.webhook
+    const query = req.query.webhook || req.query.groupId
       ? req.query
       : {
         webhook: process.env.STATIC_WEBHOOK || ''
@@ -41,7 +41,8 @@ export default (view) => {
       segmentKey: SEGMENT_KEY,
       appName: APP_NAME,
       authUrlDefault,
-      query: query
+      query: query,
+      isBot: view === 'bot'
     }
     data._global = copy(data)
     res.render(view, data)

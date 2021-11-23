@@ -37,7 +37,7 @@ export function postMessage (url, data) {
   }).then(r => r.data)
 }
 
-function transform (body) {
+export function transform (body) {
   // console.log('========')
   // console.log(JSON.stringify(body, null, 2))
   // console.log('========')
@@ -130,9 +130,9 @@ export default async function webhook2 (req, res) {
     ...req.body,
     whId: id
   })
-  console.log('-----')
-  console.log(JSON.stringify(data, null, 2))
-  console.log('-----')
+  // console.log('-----')
+  // console.log(JSON.stringify(data, null, 2))
+  // console.log('-----')
   if (!data) {
     res.send('skip')
     return 'skip'

@@ -84,11 +84,17 @@ export default function WebhookList (props) {
     webhook: props.webhookEdit,
     eventTypes: props.eventTypes
   }
+  const filter = window.rc.isBot
+    ? d => {
+      return d.bot_id === window.rc.query.botId &&
+        d.group_id === window.rc.query.groupId
+    }
+    : d => {
+      return d.rc_webhook === window.rc.query.webhook
+    }
   const data = props.filterWebhook === 'all'
     ? props.webhooks
-    : props.webhooks.filter(d => {
-      return d.rc_webhook === window.rc.query.webhook
-    })
+    : props.webhooks.filter(filter)
   return (
     <div className='webhook-list main-wrap'>
       <div className='main-content'>

@@ -66,6 +66,12 @@ User.init = async ({ code, state }) => {
       gh_id: user.id
     })
     user.authToken = uid
+  } else if (state && state.startsWith('auth:')) {
+    const arr = state.split(':')
+    const groupId = arr[1]
+    const botId = arr[2]
+    user.groupId = groupId
+    user.botId = botId
   }
   return user
 }
