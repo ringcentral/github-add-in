@@ -8,7 +8,7 @@ Goto RingCentral Apps -> Notification apps list, find and click GitHub add-in, j
 ## YouTube video
 
 - GitHub add-in: [https://youtu.be/qL-7b03U1ow](https://youtu.be/qL-7b03U1ow)
-- GitHub bot preview: [https://youtu.be/8MWf6hyIbt8](https://youtu.be/8MWf6hyIbt8)
+- GitHub bot preview: [https://youtu.be/8MWf6hyIbt8](https://youtu.be/Dm-fgFdjHB0)
 
 ## DEV Prerequisites
 
