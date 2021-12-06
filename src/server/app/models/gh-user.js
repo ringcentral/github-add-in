@@ -1,12 +1,12 @@
 import Sequelize from 'sequelize'
-import { nanoid as generate } from 'nanoid'
+import uid from '../common/uid'
 import sequelize from './sequelize'
 
 export const Service = sequelize.define('GithubForGlipIntegrationUsers', {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,
-    defaultValue: () => generate(10)
+    defaultValue: uid
   },
   gh_user_info: {
     type: Sequelize.JSON

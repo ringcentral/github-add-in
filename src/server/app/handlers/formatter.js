@@ -16,6 +16,7 @@ import {
   descTempRender,
   commentSetsTempRender
 } from './templates'
+import uid from '../common/uid'
 import {
   GITHUB_ICON_URL,
   FEEDBACK_URL,
@@ -187,7 +188,11 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen issue',
-        action: 'reopen-issue'
+        action: 'reopen-issue',
+        shouldUpdate: 'yes',
+        updatedAction: 'close-issue',
+        updatedTitle: 'Close issue',
+        refId: uid()
       }),
       sep: ','
     }, commentAction]
@@ -201,7 +206,11 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Close issue',
-        action: 'close-issue'
+        action: 'close-issue',
+        shouldUpdate: 'yes',
+        updatedAction: 'open-issue',
+        updatedTitle: 'Reopen issue',
+        refId: uid()
       }),
       sep: ','
     }, commentAction]

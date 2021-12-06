@@ -7,6 +7,7 @@
  */
 
 import { BotWebhook } from '../models/bot-webhook'
+import { CardUpdateRef } from '../models/card-update-ref'
 import Bot from 'ringcentral-chatbot-core/dist/models/Bot'
 import {
   transform
@@ -33,6 +34,48 @@ export function postMessage (url, data) {
       'Content-Type': 'application/json'
     }
   }).then(r => r.data)
+}
+
+function getAction (data) {
+  try {
+    return data.body[5].columns[2].items[0].actions[0]
+  } catch (e) {
+    return null
+  }
+}
+
+export async function prepareUpdateCard (data, result) {
+  if (!result || !result.id) {
+    return false
+  }
+  const actionsNeedUpdate = getAction(data)
+  if (!actionsNeedUpdate || !actionsNeedUpdate.data || !actionsNeedUpdate.data.shouldUpdate) {
+    return false
+  }
+  const {
+    actionTitle,
+    action,
+    updatedAction,
+    updatedTitle,
+    botId,
+    refId
+  } = actionsNeedUpdate.data
+  Object.assign(actionsNeedUpdate.data, {
+    updatedAction: action,
+    updatedTitle: actionTitle,
+    actionTitle: updatedTitle,
+    action: updatedAction
+  })
+  Object.assign(actionsNeedUpdate, {
+    title: updatedTitle
+  })
+  const up = {
+    id: refId,
+    botId,
+    cardId: result.id,
+    data
+  }
+  await CardUpdateRef.create(up)
 }
 
 export default async function webhook2 (req, res) {
@@ -70,8 +113,20 @@ export default async function webhook2 (req, res) {
     res.send('skip')
     return 'skip'
   }
+
   // console.log('webhook', wh.rc_webhook, r.data)
   const x = await bot.sendAdaptiveCard(wh.group_id, d)
-  // console.log('x', x)
+  await prepareUpdateCard(d, x)
+  /*
+  x {
+  id: '3333333',
+  creationTime: '2021-12-06T02:40:52.588Z',
+  lastModifiedTime: '2021-12-06T02:40:52.632Z',
+  type: 'AdaptiveCard',
+  creator: { id: '333333' },
+  chatIds: [ '333333' ],
+  version: '1.3'
+}
+  */
   res.send(x)
 }

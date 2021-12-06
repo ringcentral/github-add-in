@@ -163,23 +163,23 @@ function addComment (user, config, type = 'issues') {
     })
 }
 
-export async function ghAction (user, body) {
+export function ghAction (user, body) {
   const {
     data
   } = body
   const { action } = data
   if (action === 'close-issue') {
-    await updateIssueOrPr(user, data, types.issues, states.closed)
+    return updateIssueOrPr(user, data, types.issues, states.closed)
   } else if (action === 'close-pr') {
-    await updateIssueOrPr(user, data, types.pulls, states.closed)
+    return updateIssueOrPr(user, data, types.pulls, states.closed)
   } else if (action === 'reopen-issue') {
-    await updateIssueOrPr(user, data, types.issues, states.open)
+    return updateIssueOrPr(user, data, types.issues, states.open)
   } else if (action === 'reopen-pr') {
-    await updateIssueOrPr(user, data, types.pulls, states.open)
+    return updateIssueOrPr(user, data, types.pulls, states.open)
   } else if (action === 'add-comment') {
-    await addComment(user, data, types.issues)
+    return addComment(user, data, types.issues)
   } else if (action === 'add-comment-pr') {
-    await addComment(user, data, types.pulls)
+    return addComment(user, data, types.pulls)
   }
 }
 
