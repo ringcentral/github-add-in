@@ -31,8 +31,19 @@ const commonEventData = {
   icon: GITHUB_ICON_URL
 }
 
+function capitalizeFirstLetter (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export function formatAction (action) {
   return action.replace(/_/g, ' ')
+}
+
+export function formatActionCap (action) {
+  if (!action) {
+    return ''
+  }
+  return capitalizeFirstLetter(action.replace(/_/g, ' '))
 }
 
 export function formStar (body) {
@@ -114,7 +125,8 @@ export function formIssue (body) {
   const link = `"[${body.issue.title}](${url})"`
   const { action } = body
   let actionNew = formatAction(action)
-  let pp = ''
+  const actionPre = formatActionCap(action)
+  let pp = actionPre ? `[${actionPre}] ` : ''
   if (action === 'opened' || action === 'created') {
     pp = 'New '
     actionNew = ''
@@ -264,7 +276,8 @@ export function formPr (body) {
   }
   const link = `"[${body.pull_request.title}](${url})"`
   let actionTxt = formatAction(action)
-  let pp = ''
+  const actionPre = formatActionCap(action)
+  let pp = actionPre ? `[${actionPre}] ` : ''
   if (
     action === 'opened' ||
     action === 'created' ||
