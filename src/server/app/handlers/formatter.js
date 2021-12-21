@@ -27,7 +27,7 @@ import copy from 'json-deep-copy'
 import _ from 'lodash'
 
 const commonEventData = {
-  activity: 'GitHub',
+  // activity: 'GitHub',
   icon: GITHUB_ICON_URL
 }
 
