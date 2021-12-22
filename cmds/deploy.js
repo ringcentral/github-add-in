@@ -4,7 +4,7 @@ const { copyFileSync, readFileSync, writeFileSync } = require('fs')
 const { exec } = require('child_process')
 const yaml = require('js-yaml')
 const { resolve } = require('path')
-const cwd = resolve(__dirname, '../deploy')
+const cwd = resolve(__dirname, '../serverless-deploy')
 const execAsync = (cmd, options = {
   cwd
 }) => {
@@ -30,9 +30,9 @@ async function run () {
   log('start deploy')
   copyFileSync(
     resolve(__dirname, '../package.json'),
-    resolve(__dirname, '../deploy/package.json')
+    resolve(__dirname, '../serverless-deploy/package.json')
   )
-  const file = resolve(__dirname, '../deploy/env.yml')
+  const file = resolve(__dirname, '../serverless-deploy/env.yml')
   const yml = readYml(file)
   console.log(yml, 'yml')
   const url = yml.RINGCENTRAL_APP_SERVER

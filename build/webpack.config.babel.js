@@ -35,7 +35,7 @@ const config = {
     extensions: ['.js', '.jsx', '.ts', '.json']
   },
   output: {
-    path: resolve(__dirname, '../deploy/dist/static'),
+    path: resolve(__dirname, '../serverless-deploy/dist/static'),
     filename: 'js/[name].bundle.js',
     publicPath: '/',
     chunkFilename: 'js/[name].bundle.js',
@@ -101,7 +101,7 @@ const config = {
   devServer: {
     host,
     disableHostCheck: true,
-    contentBase: '../deploy/dist/static',
+    contentBase: '../serverless-deploy/dist/static',
     port: devPort,
     overlay: {
       warnings: true,
