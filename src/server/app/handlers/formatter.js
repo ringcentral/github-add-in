@@ -31,6 +31,10 @@ const commonEventData = {
   icon: GITHUB_ICON_URL
 }
 
+function titleParser (t) {
+  return t.replace(/\[/g, '<').replace(/\]/g, '>')
+}
+
 export const icons = {
   comment: baseURL('comment'),
   issue: baseURL('issue'),
@@ -77,7 +81,7 @@ export function formRelease (body) {
   const url = body.release.html_url
   const ext = {
     icon: icons.release,
-    title: `New release: [${body.release.tag_name}](${url})`,
+    title: `New release: [${titleParser(body.release.tag_name)}](${url})`,
     bodyTitle: 'Release Note',
     body: parse(`${body.release.body || 'No release note'}`)
   }
@@ -132,7 +136,7 @@ export function formIssue (body) {
     url = body.comment.html_url
     type = 'comment on '
   }
-  const link = `"[${body.issue.title}](${url})"`
+  const link = `"[${titleParser(body.issue.title)}](${url})"`
   const { action } = body
   let actionNew = formatAction(action)
   const actionPre = formatActionCap(action)
@@ -274,7 +278,7 @@ export function formPr (body) {
     bodyTitle = 'Review message'
     msg = parse(body.review.body || 'No review body')
   }
-  const link = `"[${body.pull_request.title}](${url})"`
+  const link = `"[${titleParser(body.pull_request.title)}](${url})"`
   let actionTxt = formatAction(action)
   const actionPre = formatActionCap(action)
   let pp = actionPre ? `[${actionPre}] ` : ''
@@ -423,7 +427,7 @@ function commitRender (c) {
 export function formPush (body) {
   const msg = parse(_.get(body, 'commits[0].message'))
   const titleStr = msg
-    ? `: \\"[${msg}](${body.compare})\\"`
+    ? `: \\"[${titleParser(msg)}](${body.compare})\\"`
     : ''
   const title = msg
     ? `: \\"${msg}\\"`
@@ -465,7 +469,7 @@ export function formAct (title, body, linkProp, actProp = 'action') {
     ? ` ${formatAction(act)}`
     : ''
   const titleStr = link
-    ? `[${title}](${link})`
+    ? `[${titleParser(title)}](${link})`
     : title
   const ext = {
     fallbackText: `New event: ${title}${action}`,
