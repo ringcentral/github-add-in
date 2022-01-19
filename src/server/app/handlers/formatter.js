@@ -14,6 +14,7 @@ import {
   feedbackTempRender,
   titleTempRender,
   descTempRender,
+  longDescTempRender,
   commentSetsTempRender
 } from './templates'
 import parse from './string-parser'
@@ -30,7 +31,7 @@ const commonEventData = {
   // activity: 'GitHub event',
   icon: GITHUB_ICON_URL
 }
-
+const MAX_LINES = 5
 function titleParser (t) {
   return t.replace(/\[/g, '<').replace(/\]/g, '>')
 }
@@ -485,11 +486,25 @@ function createCommonProps (body, extend) {
     title,
     iconUrl
   })
-  const desc = descTempRender({
-    body: extend.body,
-    hasDesc: extend.body,
-    bodyTitle: extend.bodyTitle || 'message'
-  })
+  let desc = ''
+  const bodyArr = (extend.body || '').split('\\n').map(r => r.trim())
+  const hasMore = bodyArr.length > MAX_LINES
+  if (hasMore) {
+    const body1 = bodyArr.slice(0, MAX_LINES).join('\\n')
+    const body2 = bodyArr.slice(MAX_LINES).join('\\n')
+    desc = longDescTempRender({
+      body: body1,
+      hasDesc: true,
+      moreText: body2,
+      bodyTitle: extend.bodyTitle || 'message'
+    })
+  } else {
+    desc = descTempRender({
+      body: extend.body,
+      hasDesc: extend.body,
+      bodyTitle: extend.bodyTitle || 'message'
+    })
+  }
   const actionsStr = extend.actions
     ? actionsTempRender({
       hasActions: !!(extend.actions && extend.actions.length),

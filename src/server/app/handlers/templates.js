@@ -13,6 +13,7 @@ import { feedbackTemp } from '../templates/parts/feedback'
 import { repoTemp } from '../templates/parts/repo'
 import { titleTemp } from '../templates/parts/title'
 import { descTemp } from '../templates/parts/desc'
+import { longDescTemp } from '../templates/parts/long-desc'
 import { authTemp } from '../templates/auth'
 import { messageTemp } from '../templates/message'
 import { commentSetsTemp } from '../templates/parts/comment-sets'
@@ -34,6 +35,7 @@ export const repoTempRender = temp.compile(repoTemp, { noEscape: true })
 export const feedbackTempRender = temp.compile(feedbackTemp, { noEscape: true })
 export const titleTempRender = temp.compile(titleTemp, { noEscape: true })
 export const descTempRender = temp.compile(descTemp, { noEscape: true })
+export const longDescTempRender = temp.compile(longDescTemp, { noEscape: true })
 export const authTempRender = temp.compile(authTemp, { noEscape: true })
 export const messageTempRender = temp.compile(messageTemp, { noEscape: true })
 export const commentSetsTempRender = temp.compile(commentSetsTemp, { noEscape: true })

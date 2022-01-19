@@ -7,20 +7,20 @@ export default function eventHandler ({
   userId, // message creator's id
   message // message object, check ringcentral api document for detail
 }) {
-  console.log(
-    '========'
-  )
-  console.log(
-    type,
-    bot,
-    text,
-    group,
-    userId,
-    message
-  )
-  console.log(
-    '========'
-  )
+  // console.log(
+  //   '========'
+  // )
+  // console.log(
+  //   type,
+  //   bot,
+  //   text,
+  //   group,
+  //   userId,
+  //   message
+  // )
+  // console.log(
+  //   '========'
+  // )
   // bot.sendMessage(groupId, body)
   if (type === 'BotJoinGroup') {
     bot.sendAdaptiveCard(group.id, {
