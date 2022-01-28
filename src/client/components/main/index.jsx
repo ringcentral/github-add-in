@@ -13,6 +13,12 @@ import wait from '../../common/wait'
 import _ from 'lodash'
 import './options.styl'
 
+function getWebhookId (url) {
+  const arr = url.split('/')
+  const len = arr.length
+  return arr[len - 1]
+}
+
 export default function Options () {
   const ref = useRef(null)
   const [state, setStateOrg] = useState({
@@ -132,7 +138,7 @@ export default function Options () {
     await wait(100)
     const wh = window.rc.query.webhook
     const hasCurrentWh = webhooks.find(d => {
-      return d.rc_webhook === wh
+      return d.rc_webhook === wh || getWebhookId(d.rc_webhook) === getWebhookId(wh)
     })
     if (hasCurrentWh) {
       setState({
