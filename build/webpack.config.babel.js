@@ -25,7 +25,8 @@ const config = {
   mode: 'development',
   entry: {
     app: './src/client/app.js',
-    token: './src/client/token.js'
+    token: './src/client/token.js',
+    bot: './src/client/bot.js'
   },
   externals: {
     react: 'React',

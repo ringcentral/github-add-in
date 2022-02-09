@@ -37,7 +37,7 @@ export function postMessage (url, data) {
   }).then(r => r.data)
 }
 
-function transform (body) {
+export function transform (body) {
   // console.log('========')
   // console.log(JSON.stringify(body, null, 2))
   // console.log('========')

@@ -5,8 +5,18 @@
 
 import fetch from '../../lib/fetch'
 
+const prefix = window.rc.isBot
+  ? '/bot-wh'
+  : '/wh'
+const ext = window.rc.isBot
+  ? {
+    bot_id: window.rc.query.botId,
+    group_id: window.rc.query.groupId
+  }
+  : {}
+
 export async function request ({
-  path = '/wh',
+  path = prefix,
   method,
   data
 }) {
@@ -38,6 +48,7 @@ export async function createDbWebhook ({
     method: 'post',
     data: {
       id,
+      ...ext,
       gh_webhook_id: ghWebhookId,
       rc_webhook: rcWebhook,
       gh_user: user,
@@ -53,7 +64,7 @@ export async function updateDbWebhook ({
   update
 }) {
   return request({
-    path: '/wh/' + id,
+    path: prefix + '/' + id,
     method: 'post',
     data: update
   })
@@ -63,7 +74,7 @@ export async function delDbWebhook (
   id
 ) {
   return request({
-    path: '/wh/' + id,
+    path: prefix + '/' + id,
     method: 'delete'
   })
 }

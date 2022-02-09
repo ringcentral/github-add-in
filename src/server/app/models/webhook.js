@@ -1,12 +1,12 @@
 import Sequelize from 'sequelize'
-import { nanoid as generate } from 'nanoid'
+import uid from '../common/uid'
 import sequelize from './sequelize'
 
 export const Webhook = sequelize.define('GithubForGlipIntegrationWebhook', {
   id: {
     type: Sequelize.STRING,
     primaryKey: true,
-    defaultValue: () => generate(10)
+    defaultValue: uid
   },
   gh_user_id: {
     type: Sequelize.STRING

@@ -8,10 +8,11 @@ import webhook2, {
   postMessage,
   repositoryEventProps
 } from '../handlers/webhook'
-
 import {
   FEEDBACK_URL,
-  GITHUB_ICON_URL,
+  GITHUB_ICON_URL
+} from '../common/constants'
+import {
   icons,
   formatAction
 } from '../handlers/formatter'
