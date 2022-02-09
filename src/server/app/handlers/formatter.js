@@ -17,33 +17,23 @@ import {
   longDescTempRender,
   commentSetsTempRender
 } from './templates'
+import uid from '../common/uid'
+import {
+  GITHUB_ICON_URL,
+  FEEDBACK_URL,
+  icons
+} from '../common/constants'
 import parse from './string-parser'
 import copy from 'json-deep-copy'
 import _ from 'lodash'
 
-export const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
-export const GITHUB_ICON_URL = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
-
-const baseURL = (name) => {
-  return `https://raw.githubusercontent.com/ringcentral/github-notification-app/main/icons_v2/${name}.png`
-}
 const commonEventData = {
-  // activity: 'GitHub event',
+  // activity: 'GitHub',
   icon: GITHUB_ICON_URL
 }
 const MAX_LINES = 5
 function titleParser (t) {
   return t.replace(/\[/g, '<').replace(/\]/g, '>')
-}
-
-export const icons = {
-  comment: baseURL('comment'),
-  issue: baseURL('issue'),
-  feedback: baseURL('feedback'),
-  pull: baseURL('pull-request'),
-  push: baseURL('push'),
-  release: baseURL('release'),
-  common: baseURL('github')
 }
 
 function capitalizeFirstLetter (string) {
@@ -174,7 +164,9 @@ export function formIssue (body) {
     owner,
     repo,
     n,
-    whId: body.whId
+    whId: body.whId,
+    botId: body.botId,
+    groupId: body.groupId
   }
   const cardProps = {
     id: 'githubCommentInput1',
@@ -213,7 +205,11 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen issue',
-        action: 'reopen-issue'
+        action: 'reopen-issue',
+        shouldUpdate: 'yes',
+        updatedAction: 'close-issue',
+        updatedTitle: 'Close issue',
+        refId: uid()
       }),
       sep: ','
     }, commentAction]
@@ -227,7 +223,11 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Close issue',
-        action: 'close-issue'
+        action: 'close-issue',
+        shouldUpdate: 'yes',
+        updatedAction: 'open-issue',
+        updatedTitle: 'Reopen issue',
+        refId: uid()
       }),
       sep: ','
     }, commentAction]
@@ -327,6 +327,8 @@ export function formPr (body) {
     repo,
     n,
     whId: body.whId,
+    botId: body.botId,
+    groupId: body.groupId,
     type: ''
   }
   const cardProps = {
@@ -528,7 +530,7 @@ function createCommonProps (body, extend) {
     feedback: feedbackTempRender({
       title: 'Feedback',
       actions: extend.actions,
-      url: 'https://github.com/ringcentral/github-notification-app/issues/new',
+      url: FEEDBACK_URL,
       icon: icons.feedback
     })
   }

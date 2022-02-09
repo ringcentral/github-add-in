@@ -1,9 +1,9 @@
-import { commentTemp } from '../templates/comment'
-import { commonTemp } from '../templates/common'
-import { prTemp } from '../templates/pr'
-import { pushTemp } from '../templates/push'
-import { releaseTemp } from '../templates/release'
-import { issueTemp } from '../templates/issue'
+import { commentTemp } from '../templates/add-in/comment'
+import { commonTemp } from '../templates/add-in/common'
+import { prTemp } from '../templates/add-in/pr'
+import { pushTemp } from '../templates/add-in/push'
+import { releaseTemp } from '../templates/add-in/release'
+import { issueTemp } from '../templates/add-in/issue'
 import { actionsTemp } from '../templates/parts/actions'
 import { assetsTemp } from '../templates/parts/assets'
 import { authorTemp } from '../templates/parts/author'
@@ -14,9 +14,10 @@ import { repoTemp } from '../templates/parts/repo'
 import { titleTemp } from '../templates/parts/title'
 import { descTemp } from '../templates/parts/desc'
 import { longDescTemp } from '../templates/parts/long-desc'
-import { authTemp } from '../templates/auth'
-import { messageTemp } from '../templates/message'
+import { authTemp } from '../templates/add-in/auth'
+import { messageTemp } from '../templates/add-in/message'
 import { commentSetsTemp } from '../templates/parts/comment-sets'
+import { botJoinTemp } from '../templates/bot/bot-join'
 
 import temp from 'handlebars'
 
@@ -39,3 +40,4 @@ export const longDescTempRender = temp.compile(longDescTemp, { noEscape: true })
 export const authTempRender = temp.compile(authTemp, { noEscape: true })
 export const messageTempRender = temp.compile(messageTemp, { noEscape: true })
 export const commentSetsTempRender = temp.compile(commentSetsTemp, { noEscape: true })
+export const botJoinTempRender = temp.compile(botJoinTemp, { noEscape: true })

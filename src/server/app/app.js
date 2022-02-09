@@ -10,9 +10,10 @@ import admin from './routes/admin'
 import webhook from './routes/gh-webhook'
 import dbWebhook from './routes/db-webhook'
 import act from './routes/rc-action'
-// import { extendApp } from 'ringcentral-chatbot-core'
-// import botConfig from './bot/bot-config'
-// import eventHandler from './bot/event-handler'
+import { extendApp } from 'ringcentral-chatbot-core'
+import botConfig from './bot/bot-config'
+import eventHandler from './bot/event-handler'
+import botRoute from './routes/bot'
 
 export default function extend (app) {
   const jwtAuth = jwt({
@@ -45,8 +46,9 @@ export default function extend (app) {
   admin(app)
   act(app)
   dbWebhook(app, jwtAuth)
+  botRoute(app)
 
-  // // bot
-  // const skills = []
-  // app = extendApp(app, skills, eventHandler, botConfig)
+  // bot
+  const skills = []
+  app = extendApp(app, skills, eventHandler, botConfig)
 }

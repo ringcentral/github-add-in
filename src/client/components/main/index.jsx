@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { Component } from 'react'
 import eventTypes from '../../common/github-events'
 import Entry from './entry'
 import NewWebhook from './new-webhook'
@@ -19,9 +19,8 @@ function getWebhookId (url) {
   return arr[len - 1]
 }
 
-export default function Options () {
-  const ref = useRef(null)
-  const [state, setStateOrg] = useState({
+export default class Options extends Component {
+  state = {
     loadingUser: false,
     orgs: [],
     repos: [],
@@ -40,16 +39,16 @@ export default function Options () {
     filterWebhook: 'current',
     beta: false,
     webhookEdit: null
-  })
-  function setState (update) {
-    setStateOrg(old => {
-      return {
-        ...old,
-        ...update
-      }
-    })
   }
-  function track (eventName) {
+
+  ref = null
+
+  componentDidMount () {
+    this.handleEvent()
+    this.fetchUserInfo()
+  }
+
+  track = (eventName) => {
     const segmentOptions = {
       integrations: {
         All: true,
@@ -65,40 +64,49 @@ export default function Options () {
       // 'Extension Type': string;
     }, segmentOptions)
   }
+
   // function getFrameName () {
   //   const arr = window.location.href.match(/frameName=([\w-_\d]+)/)
   //   return arr
   //     ? arr[1]
   //     : ''
   // }
-  async function logout (e) {
+  logout = async (e) => {
     e.preventDefault()
-    setState({
+    this.setState({
       loadingUser: true,
       user: {}
     })
     await logoutFunc()
-    setState({
+    this.setState({
       loadingUser: false
     })
   }
-  function onAuthCallack (e) {
+
+  onAuthCallack = (e) => {
     console.log(e)
     if (e && e.data && e.data.authDone) {
-      fetchUserInfo()
+      this.fetchUserInfo()
     }
-    window.removeEventListener('message', onAuthCallack)
+    window.removeEventListener('message', this.onAuthCallack)
   }
-  function onAuth () {
-    const url = window.rc.authUrlDefault.replace(
+
+  getAuthUrl = () => {
+    return window.rc.authUrlDefault.replace(
       window.rc.defaultState,
       encodeURIComponent(window.rc.query.webhook)
     )
-    ref.current.openWindow(url)
-    window.addEventListener('message', onAuthCallack)
   }
-  async function fetchWebhooks (firstTime) {
-    setState({
+
+  handleAuth = () => {
+    const url = this.getAuthUrl()
+    console.log('====', url)
+    this.ref.openWindow(url)
+    window.addEventListener('message', this.onAuthCallack)
+  }
+
+  fetchWebhooks = async (firstTime) => {
+    this.setState({
       loadingWebhooks: true
     })
     const arr = await listDbWebhook()
@@ -108,13 +116,14 @@ export default function Options () {
     if (arr) {
       up.webhooks = arr
     }
-    setState(up)
+    this.setState(up)
     if (firstTime) {
-      checkMatchedWebhook(arr)
+      this.checkMatchedWebhook(arr)
     }
   }
-  async function updateWebhook (wh, events) {
-    setState({
+
+  updateWebhook = async (wh, events) => {
+    this.setState({
       webhookEdit: null,
       loadingWebhooks: true
     })
@@ -130,69 +139,72 @@ export default function Options () {
     if (a) {
       await updateGhWebhook(wh.gh_org.login, wh.gh_repo.name, wh.gh_webhook_id, events)
     }
-    setState(up)
-    await fetchWebhooks()
+    this.setState(up)
+    await this.fetchWebhooks()
   }
 
-  async function checkMatchedWebhook (webhooks) {
+  checkMatchedWebhook = async (webhooks) => {
     await wait(100)
     const wh = window.rc.query.webhook
     const hasCurrentWh = webhooks.find(d => {
       return d.rc_webhook === wh || getWebhookId(d.rc_webhook) === getWebhookId(wh)
     })
     if (hasCurrentWh) {
-      setState({
+      this.setState({
         filterWebhook: 'current',
         showList: true
       })
     }
   }
 
-  function handleSwitchFilter (e) {
-    setState({
+  handleSwitchFilter = (e) => {
+    this.setState({
       filterWebhook: e.target.value
     })
   }
 
-  async function fetchUserInfo () {
-    setState({
+  isUserAuthed = (user) => {
+    return user && user.result && user.result.id
+  }
+
+  fetchUserInfo = async () => {
+    this.setState({
       loadingUser: true
     })
     const user = await fetchUser()
     const update = {
       loadingUser: false
     }
-    if (user) {
+    if (this.isUserAuthed(user)) {
       window.rc.user = user.result
       update.user = user.result
-      fetchWebhooks(true)
-      fetchOrgs()
+      this.fetchWebhooks(true)
+      this.fetchOrgs()
     }
-    setState(update)
+    this.setState(update)
   }
-  async function fetchOrgs () {
-    setState({
+
+  fetchOrgs = async () => {
+    this.setState({
       loadingOrgs: true
     })
     const orgs = await getOrgs()
     const update = {
       loadingOrgs: false
     }
-    setStateOrg(old => {
+    this.setState(old => {
       if (orgs) {
         update.orgs = [
           old.user.gh_user_info,
           ...orgs
         ]
       }
-      return {
-        ...old,
-        ...update
-      }
+      return update
     })
   }
-  async function fetchRepos (org = state.currentOrg, isUser) {
-    setState({
+
+  fetchRepos = async (org = this.state.currentOrg, isUser) => {
+    this.setState({
       loadingRepos: true
     })
     const repos = await getRepos(org.login, isUser)
@@ -202,23 +214,25 @@ export default function Options () {
     if (repos) {
       update.repos = repos
     }
-    setState(update)
+    this.setState(update)
   }
-  function onClickOrg (org) {
+
+  onClickOrg = (org) => {
     const isUser = org.login === window.rc.user.gh_user_info.login
-    fetchRepos(org, isUser)
-    setState({
+    this.fetchRepos(org, isUser)
+    this.setState({
       currentRepo: null,
       step: 1,
       currentOrg: org
     })
   }
-  async function submit () {
-    const events = state.selectedEvents
+
+  submit = async () => {
+    const events = this.state.selectedEvents
     if (!events.length) {
       return null
     }
-    setState({
+    this.setState({
       submitting: true
     })
     const propsArr = ['id', 'login', 'avatar_url', 'html_url']
@@ -226,35 +240,37 @@ export default function Options () {
       ghWebhookId: 'none',
       rcWebhook: window.rc.query.webhook,
       user: _.pick(
-        state.user.gh_user_info,
+        this.state.user.gh_user_info,
         propsArr
       ),
       org: _.pick(
-        state.currentOrg,
+        this.state.currentOrg,
         propsArr
       ),
       repo: _.pick(
-        state.currentRepo,
+        this.state.currentRepo,
         ['id', 'full_name', 'name', 'html_url']
       ),
       events
     })
     const { id } = wh
-    const orgId = state.currentOrg.login
-    const repoId = state.currentRepo.name
-    const str = state.beta ? 'v2/' : ''
-    const url = window.rc.server + `/gh/webhook/${str}` + id
-    console.log('url', url)
-    console.log('state', state)
+    const orgId = this.state.currentOrg.login
+    const repoId = this.state.currentRepo.name
+    const mid = window.rc.isBot
+      ? 'gh-bot'
+      : 'gh'
+    const url = window.rc.server + `/${mid}/webhook/` + id
+    // console.log('url', url)
+    // console.log('state', state)
     const wh1 = await createGhWebhook(
       orgId,
       repoId,
       url,
       events,
-      state.beta
+      this.state.beta
     )
     if (!wh1) {
-      setState({
+      this.setState({
         submitting: false
       })
       notification.error({
@@ -273,14 +289,13 @@ export default function Options () {
       id,
       update: up
     })
-    setStateOrg(old => {
+    this.setState(old => {
       const arr = copy(old.webhooks)
       arr.push({
         ...wh,
         ...up
       })
       return {
-        ...old,
         webhooks: arr,
         submitting: false,
         selectedEvents: []
@@ -289,51 +304,56 @@ export default function Options () {
     Modal.success({
       content: 'Done! Webhook created'
     })
-    track('GitHub Webhook created')
+    this.track('GitHub Webhook created')
     return {
       status: true
     }
   }
-  function onClickRepo (repo) {
-    setState({
+
+  onClickRepo = (repo) => {
+    this.setState({
       currentRepo: repo,
       step: 2
     })
   }
-  function onStepChange (step) {
-    const currentStep = state.step
+
+  onStepChange = (step) => {
+    const currentStep = this.state.step
     if (step >= currentStep) {
       return null
     }
     if (step !== 2) {
-      nofitfyCanSubmit(false)
+      this.nofitfyCanSubmit(false)
     }
     if (step === 0) {
-      setState({
+      this.setState({
         step,
         currentRepo: null,
         repos: [],
         currentOrg: null
       })
     } else if (step === 1) {
-      setState({
+      this.setState({
         step,
         currentRepo: null
       })
     }
   }
-  function showEditWebhook (wh) {
-    setState({
+
+  showEditWebhook = (wh) => {
+    this.setState({
       webhookEdit: wh
     })
   }
-  function hideEditWebhook () {
-    setState({
+
+  hideEditWebhook = () => {
+    this.setState({
       webhookEdit: null
     })
   }
-  async function delWebhook (wh) {
-    setState({
+
+  delWebhook = async (wh) => {
+    this.setState({
       submitting: true
     })
     if (wh.gh_webhook_id) {
@@ -344,28 +364,30 @@ export default function Options () {
       )
     }
     await delDbWebhook(wh.id)
-    setStateOrg(old => {
+    this.setState(old => {
       const arr = copy(old.webhooks)
         .filter(d => d.id !== wh.id)
       return {
-        ...old,
         submitting: false,
         webhooks: arr
       }
     })
   }
-  function switchWebhookList (showList) {
-    setState({
+
+  switchWebhookList = (showList) => {
+    this.setState({
       showList
     })
   }
-  function nofitfyCanSubmit (status) {
-    ref.current.send({ canSubmit: status })
+
+  nofitfyCanSubmit = (status) => {
+    this.ref.send({ canSubmit: status })
   }
-  function onSelectEvent (event) {
-    setStateOrg(old => {
+
+  onSelectEvent = (event) => {
+    this.setState(old => {
       const { id } = event
-      let arr = copy(state.selectedEvents)
+      let arr = copy(this.state.selectedEvents)
       if (arr.includes(id)) {
         arr = arr.filter(d => d !== id)
       } else {
@@ -374,73 +396,66 @@ export default function Options () {
           id
         ]
       }
-      nofitfyCanSubmit(arr.length > 0 && state.step === 2)
+      this.nofitfyCanSubmit(arr.length > 0 && this.state.step === 2)
       return {
-        ...old,
         selectedEvents: arr
       }
     })
   }
-  function handleEvent () {
-    if (ref.current) {
-      ref.current.dispose()
+
+  handleEvent = () => {
+    if (this.ref) {
+      this.ref.dispose()
     }
-    ref.current = new RingCentralNotificationIntegrationHelper()
-    ref.current.on('submit', submit)
+    this.ref = new RingCentralNotificationIntegrationHelper()
+    this.ref.on('submit', this.submit)
   }
-  useEffect(() => {
-    // window.addEventListener('message', e => {
-    //   console.log('inside evet', e.data)
-    // })
-    fetchUserInfo()
-  }, [])
-  useEffect(() => {
-    handleEvent()
-  }, [
-    state.selectedEvents,
-    state.user,
-    state.currentOrg,
-    state.currentRepo,
-    state.beta
-  ])
-  const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting || state.loadingUser
-  const funcs = {
-    fetchWebhooks,
-    fetchOrgs,
-    fetchRepos,
-    onClickOrg,
-    submit,
-    onClickRepo,
-    onStepChange,
-    onSelectEvent,
-    showEditWebhook,
-    hideEditWebhook,
-    updateWebhook,
-    switchWebhookList,
-    delWebhook,
-    handleSwitchFilter,
-    logout
+
+  isAuthed = () => {
+    const {
+      id
+    } = this.state.user || {}
+    return !!id
   }
-  if (state.user.id) {
+
+  render () {
+    const { state } = this
+    const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting || state.loadingUser
+    const funcs = _.pick(this, [
+      'fetchWebhooks',
+      'fetchOrgs',
+      'fetchRepos',
+      'onClickOrg',
+      'submit',
+      'onClickRepo',
+      'onStepChange',
+      'onSelectEvent',
+      'showEditWebhook',
+      'hideEditWebhook',
+      'updateWebhook',
+      'switchWebhookList',
+      'delWebhook',
+      'handleSwitchFilter',
+      'logout'
+    ])
+    if (this.isAuthed()) {
+      return (
+        <Spin spinning={loading}>
+          <NewWebhook
+            {...state}
+            {...funcs}
+            loading={loading}
+          />
+        </Spin>
+      )
+    }
+    const authUrl = this.getAuthUrl()
     return (
-      <Spin spinning={loading}>
-        <NewWebhook
-          {...state}
-          {...funcs}
-          loading={loading}
-        />
-      </Spin>
+      <Entry
+        authUrl={authUrl}
+        loadingUser={state.loadingUser}
+        onAuth={this.handleAuth}
+      />
     )
   }
-  const authUrl = window.rc.authUrlDefault.replace(
-    window.rc.defaultState,
-    encodeURIComponent(window.rc.query.webhook)
-  )
-  return (
-    <Entry
-      authUrl={authUrl}
-      loadingUser={state.loadingUser}
-      onAuth={onAuth}
-    />
-  )
 }

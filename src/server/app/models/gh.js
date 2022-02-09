@@ -7,7 +7,7 @@ import { Octokit } from '@octokit/core'
 import { Service } from './gh-user'
 import { Token } from './token'
 // import { RCGH } from './rc-gh'
-import { nanoid as generate } from 'nanoid'
+import uid from '../common/uid'
 import _ from 'lodash'
 
 export class User extends Service {}
@@ -60,12 +60,18 @@ User.init = async ({ code, state }) => {
     })
   }
   if (state && state === 'token-auth') {
-    const uid = generate(10)
+    const uuid = uid()
     await Token.create({
-      id: uid,
+      id: uuid,
       gh_id: user.id
     })
-    user.authToken = uid
+    user.authToken = uuid
+  } else if (state && state.startsWith('auth:')) {
+    const arr = state.split(':')
+    const groupId = arr[1]
+    const botId = arr[2]
+    user.groupId = groupId
+    user.botId = botId
   }
   return user
 }

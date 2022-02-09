@@ -92,8 +92,11 @@ export default function Main (props) {
     )
   }
   const disabled = !selectedEvents.length
+  const cls = window.rc.isBot
+    ? 'main-wrap is-bot'
+    : 'main-wrap'
   return (
-    <div className='main-wrap'>
+    <div className={cls}>
       <div className='steps-head'>
         <div className='main-body'>
           <Steps
