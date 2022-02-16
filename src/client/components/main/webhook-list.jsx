@@ -8,11 +8,11 @@
 
 import { CloseCircleOutlined, EditOutlined } from '@ant-design/icons'
 import { Tag, Popconfirm, List, Button, Radio } from 'antd'
-import eventsList from '../../common/github-events'
+import eventsList from '../../../server/app/common/github-events'
 import WebhookEdit from './edit-webhook'
 
 const { Item } = List
-const arr = eventsList()
+const arr = eventsList().filter(d => d)
 const tree = arr.reduce((p, k) => {
   return {
     ...p,
@@ -23,6 +23,10 @@ const tree = arr.reduce((p, k) => {
 export default function WebhookList (props) {
   function renderEvent (evt) {
     const obj = tree[evt]
+    if (!obj) {
+      console.log('evt', evt, tree)
+      return null
+    }
     return <Tag>{obj.name}</Tag>
   }
   function renderItem (item) {

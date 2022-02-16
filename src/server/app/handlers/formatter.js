@@ -17,7 +17,6 @@ import {
   longDescTempRender,
   commentSetsTempRender
 } from './templates'
-import uid from '../common/uid'
 import {
   GITHUB_ICON_URL,
   FEEDBACK_URL,
@@ -209,7 +208,7 @@ export function formIssue (body) {
         shouldUpdate: 'yes',
         updatedAction: 'close-issue',
         updatedTitle: 'Close issue',
-        refId: uid()
+        refId: body.refId
       }),
       sep: ','
     }, commentAction]
@@ -227,7 +226,7 @@ export function formIssue (body) {
         shouldUpdate: 'yes',
         updatedAction: 'open-issue',
         updatedTitle: 'Reopen issue',
-        refId: uid()
+        refId: body.refId
       }),
       sep: ','
     }, commentAction]

@@ -20,7 +20,7 @@ const execAsync = (cmd, options = {
 
 function readYml (path) {
   // Get document, or throw exception on error
-  return yaml.safeLoad(
+  return yaml.load(
     readFileSync(path, 'utf8')
   )
 }
@@ -61,7 +61,7 @@ async function run () {
   if (urlReal !== url) {
     log('modify RINGCENTRAL_APP_SERVER in deploy/.env.yml')
     yml.RINGCENTRAL_APP_SERVER = urlReal
-    const newYml = yaml.safeDump(yml)
+    const newYml = yaml.dump(yml)
     writeFileSync(file, newYml)
     run()
   } else {

@@ -2,18 +2,14 @@
  * bot handle github events
  */
 
-/**
- * handle github webhook
- */
-
 import { BotWebhook } from '../models/bot-webhook'
 import { CardUpdateRef } from '../models/card-update-ref'
 import Bot from 'ringcentral-chatbot-core/dist/models/Bot'
 import {
   transform
 } from '../handlers/webhook'
+import uid from '../common/uid'
 import axios from 'axios'
-import _ from 'lodash'
 
 export const repositoryEventProps = [
   'action',
@@ -36,54 +32,61 @@ export function postMessage (url, data) {
   }).then(r => r.data)
 }
 
-function getAction (data) {
-  try {
-    const item = data.body.find(d => {
-      return _.get(
-        d,
-        'columns[2].items[0].actions[0]'
-      )
-    })
-    if (item) {
-      return item.columns[2].items[0].actions[0]
-    }
-    return null
-  } catch (e) {
-    return null
-  }
+function isClosed (action) {
+  return action === 'closed'
 }
 
-export async function prepareUpdateCard (data, result) {
+function isOpened (action) {
+  return action === 'opened' || action === 'reopened'
+}
+
+export async function prepareUpdateCard (data, result, refId, botId) {
   if (!result || !result.id) {
     return false
   }
-  const actionsNeedUpdate = getAction(data)
-  // console.log('-------')
-  // console.log('actionsNeedUpdate', actionsNeedUpdate)
-  // console.log('--------')
-  // console.log('-------')
-  // console.log('data', JSON.stringify(data, null, 2))
-  // console.log('--------')
-  if (!actionsNeedUpdate || !actionsNeedUpdate.data || !actionsNeedUpdate.data.shouldUpdate) {
-    return false
+  const { action } = data
+  if (isClosed(action)) {
+    data.action = 'reopened'
+  } else if (isOpened(action)) {
+    data.action = 'closed'
   }
-  const {
-    actionTitle,
-    action,
-    updatedAction,
-    updatedTitle,
-    botId,
-    refId
-  } = actionsNeedUpdate.data
-  Object.assign(actionsNeedUpdate.data, {
-    updatedAction: action,
-    updatedTitle: actionTitle,
-    actionTitle: updatedTitle,
-    action: updatedAction
-  })
-  Object.assign(actionsNeedUpdate, {
-    title: updatedTitle
-  })
+  /* issue events
+  - opened
+  - edited
+  - deleted
+  - transferred
+  - pinned
+  - unpinned
+  - closed
+  - reopened
+  - assigned
+  - unassigned
+  - labeled
+  - unlabeled
+  - locked
+  - unlocked
+  - milestoned
+  - demilestoned
+
+  pull events
+  - assigned
+  - unassigned
+  - labeled
+  - unlabeled
+  - opened
+  - edited
+  - closed
+  - reopened
+  - synchronize
+  - converted_to_draft
+  - ready_for_review
+  - locked
+  - unlocked
+  - review_requested
+  - review_request_removed
+  - auto_merge_enabled
+  - auto_merge_disabled
+   */
   const up = {
     id: refId,
     botId,
@@ -114,12 +117,17 @@ export default async function webhook2 (req, res) {
   // console.log('-----')
   // console.log(JSON.stringify(req.body, null, 2))
   // console.log('-----')
-  const data = transform({
+  const refId = uid()
+  const dataToTrans = {
     ...req.body,
     whId: id,
     botId: wh.bot_id,
     groupId: wh.group_id
-  }, true)
+  }
+  const data = transform({
+    ...dataToTrans,
+    refId
+  })
   // console.log('-----')
   // console.log(JSON.stringify(data, null, 2))
   // console.log('-----')
@@ -130,8 +138,8 @@ export default async function webhook2 (req, res) {
   }
 
   // console.log('webhook', wh.rc_webhook, r.data)
-  const x = await bot.sendAdaptiveCard(wh.group_id, d)
-  await prepareUpdateCard(d, x)
+  const card = await bot.sendAdaptiveCard(wh.group_id, d)
+  await prepareUpdateCard(dataToTrans, card, refId, bot.id)
   /*
   x {
   id: '3333333',
@@ -143,5 +151,5 @@ export default async function webhook2 (req, res) {
   version: '1.3'
 }
   */
-  res.send(x)
+  res.send(card)
 }

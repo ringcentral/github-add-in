@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import eventTypes from '../../common/github-events'
+import eventTypes from '../../../server/app/common/github-events'
 import Entry from './entry'
 import NewWebhook from './new-webhook'
 import fetchUser from '../../common/get-user'
@@ -180,6 +180,12 @@ export default class Options extends Component {
       update.user = user.result
       this.fetchWebhooks(true)
       this.fetchOrgs()
+      if (window.rc.query.action === 'auth') {
+        Modal.info({
+          title: 'Authorized',
+          content: 'Now you got back to RingCentral App, use bot command to create GitHub webhooks'
+        })
+      }
     }
     this.setState(update)
   }
@@ -249,7 +255,7 @@ export default class Options extends Component {
       ),
       repo: _.pick(
         this.state.currentRepo,
-        ['id', 'full_name', 'name', 'html_url']
+        ['id', 'full_name', 'name', 'html_url', 'login']
       ),
       events
     })
@@ -359,7 +365,7 @@ export default class Options extends Component {
     if (wh.gh_webhook_id) {
       await delGhWebhook(
         wh.gh_org.login,
-        wh.gh_repo.name,
+        wh.gh_repo.name || wh.gh_repo.login,
         wh.gh_webhook_id
       )
     }

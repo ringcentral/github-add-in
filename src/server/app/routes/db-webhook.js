@@ -85,7 +85,9 @@ export async function del (req, res) {
       id: userId
     }
   })
-  res.send(r)
+  res.send({
+    result: r
+  })
 }
 
 export async function list (req, res) {
