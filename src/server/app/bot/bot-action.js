@@ -10,6 +10,7 @@ import { prepareUpdateCard } from './bot-webhook'
 // import { Webhook } from '../models/webhook'
 import { ghAction } from '../handlers/add-in-action'
 import { handleMessage } from './bot-logic'
+import { transform } from '../handlers/webhook'
 
 function getId (user) {
   const {
@@ -35,13 +36,18 @@ async function sendAuthMessage (body) {
 
 async function updateCard (ref) {
   const {
+    id,
     data,
     botId,
     cardId
   } = ref
+  const obj = transform({
+    ...data,
+    refId: id
+  }).attachments[0]
   const bot = await Bot.findByPk(botId)
-  await bot.updateAdaptiveCard(cardId, data)
-  await prepareUpdateCard(data, { id: cardId })
+  await bot.updateAdaptiveCard(cardId, obj)
+  await prepareUpdateCard(data, { id: cardId }, id, botId)
 }
 
 export default async function action (req, res) {

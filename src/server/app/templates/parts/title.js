@@ -18,6 +18,7 @@ export const titleTemp = `{
       "items": [{
         "type": "TextBlock",
         "text": "{{title}}",
+        "id": "github-card-title",
         "weight": "bolder",
         "wrap": true,
         "size": "medium"
