@@ -2,11 +2,26 @@
 import { User } from '../models/gh'
 import basicAuth from 'express-basic-auth'
 import { Webhook } from '../models/webhook'
+import { BotWebhook } from '../models/bot-webhook'
+import { RCGH } from '../models/rc-gh'
+import { CardUpdateRef } from '../models/card-update-ref'
+import { Token } from '../models/token'
+import Bot from 'ringcentral-chatbot-core/dist/models/Bot'
 
 const {
   RINGCENTRAL_ADMIN_USERNAME,
   RINGCENTRAL_ADMIN_PASSWORD
 } = process.env
+
+const tableMapper = {
+  User,
+  Webhook,
+  BotWebhook,
+  RCGH,
+  CardUpdateRef,
+  Token,
+  Bot
+}
 
 const auth = basicAuth({
   users: {
@@ -59,8 +74,33 @@ async function update (req, res) {
   res.send('ok')
 }
 
+async function action (req, res) {
+  const {
+    action,
+    table,
+    inst
+  } = req.body
+  const Table = tableMapper[table]
+  let r = ''
+  if (action === 'list') {
+    r = await Table.findAll()
+  } else if (action === 'create') {
+    r = await Table.create(inst)
+  } else if (action === 'del') {
+    r = await Table.destroy({
+      where: {
+        id: inst.id
+      }
+    })
+  }
+  res.send({
+    result: r
+  })
+}
+
 export default (app) => {
   app.put('/admin/setup-database', auth, initDb)
   app.get('/admin/view-gh', auth, viewGhUser)
   app.post('/admin/update', auth, update)
+  app.post('/admin/action', auth, action)
 }
