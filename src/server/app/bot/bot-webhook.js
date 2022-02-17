@@ -8,8 +8,8 @@ import Bot from 'ringcentral-chatbot-core/dist/models/Bot'
 import {
   transform
 } from '../handlers/webhook'
-import uid from '../common/uid'
 import axios from 'axios'
+import { cardUpdateExpire } from '../common/constants'
 
 export const repositoryEventProps = [
   'action',
@@ -40,16 +40,24 @@ function isOpened (action) {
   return action === 'opened' || action === 'reopened'
 }
 
-export async function prepareUpdateCard (data, result, refId, botId) {
-  if (!result || !result.id) {
+function isActionCanUpdate (data) {
+  if (!data.issue && !data.pull_request) {
+    return false
+  } else if (data.comment || data.review) {
     return false
   }
   const { action } = data
-  if (isClosed(action)) {
-    data.action = 'reopened'
-  } else if (isOpened(action)) {
-    data.action = 'closed'
+  return isClosed(action) || isOpened(action)
+}
+
+export async function prepareUpdateCard (data, result, botId) {
+  if (!result || !result.id) {
+    return false
   }
+  if (!isActionCanUpdate(data)) {
+    return false
+  }
+  const id = createUid(data)
   /* issue events
   - opened
   - edited
@@ -88,12 +96,45 @@ export async function prepareUpdateCard (data, result, refId, botId) {
   - auto_merge_disabled
    */
   const up = {
-    id: refId,
+    id,
     botId,
-    cardId: result.id,
-    data
+    cardId: result.id
   }
   await CardUpdateRef.create(up)
+}
+
+function createUid (data) {
+  const id = data.issue.id || data.pull_request.id
+  const type = data.issue ? 'issue' : 'pull_request'
+  const {
+    whId
+  } = data
+  return `${type}-${whId}-${id}`
+}
+
+function cardUpdateExpired (ref) {
+  return Date.now() - new Date(ref.updatedAt).getTime() > cardUpdateExpire
+}
+
+async function tryUpdateCard (dataToTrans, data, bot) {
+  if (!isActionCanUpdate(dataToTrans)) {
+    return false
+  }
+  const id = createUid(dataToTrans)
+  const ref = await CardUpdateRef.findByPk(id)
+  if (!ref) {
+    return false
+  }
+  if (cardUpdateExpired(ref)) {
+    await CardUpdateRef.destroy({
+      where: {
+        id
+      }
+    })
+    return false
+  }
+  await bot.updateAdaptiveCard(ref.cardId, data)
+  return true
 }
 
 export default async function webhook2 (req, res) {
@@ -117,17 +158,13 @@ export default async function webhook2 (req, res) {
   // console.log('-----')
   // console.log(JSON.stringify(req.body, null, 2))
   // console.log('-----')
-  const refId = uid()
   const dataToTrans = {
     ...req.body,
     whId: id,
     botId: wh.bot_id,
     groupId: wh.group_id
   }
-  const data = transform({
-    ...dataToTrans,
-    refId
-  })
+  const data = transform(dataToTrans)
   // console.log('-----')
   // console.log(JSON.stringify(data, null, 2))
   // console.log('-----')
@@ -136,10 +173,12 @@ export default async function webhook2 (req, res) {
     res.send('skip')
     return 'skip'
   }
-
+  const updateCard = await tryUpdateCard(dataToTrans, d, bot)
+  if (!updateCard) {
+    const card = await bot.sendAdaptiveCard(wh.group_id, d)
+    await prepareUpdateCard(dataToTrans, card, bot.id)
+  }
   // console.log('webhook', wh.rc_webhook, r.data)
-  const card = await bot.sendAdaptiveCard(wh.group_id, d)
-  await prepareUpdateCard(dataToTrans, card, refId, bot.id)
   /*
   x {
   id: '3333333',
@@ -151,5 +190,5 @@ export default async function webhook2 (req, res) {
   version: '1.3'
 }
   */
-  res.send(card)
+  res.send('ok')
 }

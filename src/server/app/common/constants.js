@@ -4,6 +4,7 @@ import { User } from '../models/gh'
 import copy from 'json-deep-copy'
 import { SDK } from '@ringcentral/sdk'
 
+const defaultCardUpdateExpire = 1000 * 60 * 60 * 6 // 6 hours
 const {
   RINGCENTRAL_SERVER,
   RINGCENTRAL_APP_SERVER,
@@ -11,13 +12,15 @@ const {
   SERVER_HOME,
   SERVICE_NAME,
   RINGCENTRAL_CLIENT_ID,
-  RINGCENTRAL_CLIENT_SECRET
+  RINGCENTRAL_CLIENT_SECRET,
+  CARD_UPDATE_EXPIRE = defaultCardUpdateExpire
 } = process.env
 const arr = RINGCENTRAL_APP_SERVER.split('/')
 const root = arr[0] + arr[1] + arr[2]
 const user = new User()
 const cwd = process.cwd()
 
+export const cardUpdateExpire = parseInt(CARD_UPDATE_EXPIRE, 10) || defaultCardUpdateExpire
 export const defaultState = '__default_state_'
 export const extraPath = RINGCENTRAL_APP_SERVER.replace(root, '')
 export const pack = require(resolve(cwd, 'package.json'))

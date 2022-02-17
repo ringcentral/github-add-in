@@ -204,11 +204,7 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen issue',
-        action: 'reopen-issue',
-        shouldUpdate: 'yes',
-        updatedAction: 'close-issue',
-        updatedTitle: 'Close issue',
-        refId: body.refId
+        action: 'reopen-issue'
       }),
       sep: ','
     }, commentAction]
@@ -222,11 +218,7 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Close issue',
-        action: 'close-issue',
-        shouldUpdate: 'yes',
-        updatedAction: 'open-issue',
-        updatedTitle: 'Reopen issue',
-        refId: body.refId
+        action: 'close-issue'
       }),
       sep: ','
     }, commentAction]
