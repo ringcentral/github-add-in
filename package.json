@@ -1,6 +1,6 @@
 {
   "name": "glip-integration-github",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "glip-integration-github",
   "keywords": [
     "RingCentral",
@@ -45,6 +45,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
+    "csv": "^6.0.5",
     "dynamodb-local": "0.0.31",
     "file-loader": "^6.2.0",
     "json-deep-copy": "^1.1.6",
@@ -79,7 +80,7 @@
     "jsonwebtoken": "^8.5.1",
     "nanoid": "^3.1.25",
     "pug": "^3.0.0",
-    "ringcentral-chatbot-core": "^1.1.10",
+    "ringcentral-chatbot-core": "^1.1.11",
     "serverless-http": "^2.6.0"
   },
   "standard": {
