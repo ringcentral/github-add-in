@@ -20,7 +20,8 @@ if (DYNAMODB_LOCALHOST) {
 
 const config = {
   define: {
-    timestamps: true
+    timestamps: true,
+    saveUnknown: true
   },
   logging: false,
   throughput: {
