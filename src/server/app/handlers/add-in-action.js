@@ -22,7 +22,7 @@ const types = {
   pulls: 'issues'
 }
 
-function getId (user) {
+export function getId (user) {
   const {
     id,
     accountId

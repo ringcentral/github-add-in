@@ -6,15 +6,8 @@ import { RCGH } from '../models/rc-gh'
 import { User } from '../models/gh'
 import Bot from 'ringcentral-chatbot-core/dist/models/Bot'
 // import { Webhook } from '../models/webhook'
-import { ghAction } from '../handlers/add-in-action'
+import { ghAction, getId } from '../handlers/add-in-action'
 import { handleMessage } from './bot-logic'
-
-function getId (user) {
-  const {
-    accountId
-  } = user
-  return accountId
-}
 
 async function sendAuthMessage (body) {
   const {
@@ -32,10 +25,10 @@ async function sendAuthMessage (body) {
 }
 
 export default async function action (req, res) {
-  await Bot.create({
-    id: 'temp',
-    token: req.body
-  })
+  const { log } = console
+  log('==========')
+  log(JSON.stringify(req.body, null, 2))
+  log('==========')
   const {
     user,
     data
