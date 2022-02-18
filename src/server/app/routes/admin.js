@@ -45,34 +45,34 @@ const viewGhUser = async (req, res) => {
   res.send(result)
 }
 
-async function update (req, res) {
-  const webhooks = await Webhook.findAll()
-  // console.log('hooks', webhooks)
-  const tree = webhooks.reduce((p, w) => {
-    const {
-      gh_user_id: ghId
-    } = w
-    if (!p[ghId]) {
-      p[ghId] = []
-    }
-    p[ghId].push(w.id)
-    return p
-  }, {})
-  // console.log('tree', tree)
-  const ids = Object.keys(tree)
-  for (const id of ids) {
-    const webhooks = tree[id].join(',')
-    await User.update({
-      webhooks
-    }, {
-      where: {
-        id
-      }
-    })
-    // console.log(r)
-  }
-  res.send('ok')
-}
+// async function update (req, res) {
+//   const webhooks = await Webhook.findAll()
+//   // console.log('hooks', webhooks)
+//   const tree = webhooks.reduce((p, w) => {
+//     const {
+//       gh_user_id: ghId
+//     } = w
+//     if (!p[ghId]) {
+//       p[ghId] = []
+//     }
+//     p[ghId].push(w.id)
+//     return p
+//   }, {})
+//   // console.log('tree', tree)
+//   const ids = Object.keys(tree)
+//   for (const id of ids) {
+//     const webhooks = tree[id].join(',')
+//     await User.update({
+//       webhooks
+//     }, {
+//       where: {
+//         id
+//       }
+//     })
+//     // console.log(r)
+//   }
+//   res.send('ok')
+// }
 
 async function action (req, res) {
   const {
@@ -101,6 +101,5 @@ async function action (req, res) {
 export default (app) => {
   app.put('/admin/setup-database', auth, initDb)
   app.get('/admin/view-gh', auth, viewGhUser)
-  app.post('/admin/update', auth, update)
   app.post('/admin/action', auth, action)
 }
