@@ -33,7 +33,7 @@ async function sendAuthMessage (body) {
 
 export default async function action (req, res) {
   console.log('==========')
-  console.log(req.body)
+  console.log(JSON.stringify(req.body, null, 2))
   console.log('==========')
   const {
     user,
