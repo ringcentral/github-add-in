@@ -32,9 +32,10 @@ async function sendAuthMessage (body) {
 }
 
 export default async function action (req, res) {
-  console.info('==========')
-  console.info(JSON.stringify(req.body, null, 2))
-  console.info('==========')
+  const { log } = console
+  log('==========')
+  log(JSON.stringify(req.body, null, 2))
+  log('==========')
   const {
     user,
     data
@@ -49,6 +50,9 @@ export default async function action (req, res) {
     await sendAuthMessage(req.body)
     return res.status(200).send('not exist')
   }
+  log('==========')
+  log(JSON.stringify(req.body, null, 2))
+  log('==========')
   // const { refId } = data
   // if (refId) {
   //   const ref = await CardUpdateRef.findByPk(refId)
