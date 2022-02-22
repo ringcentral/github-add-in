@@ -39,9 +39,7 @@ export default async function action (req, res) {
   const rcId = getId(user)
   const inst = await RCGH.findByPk(rcId)
   if (!inst) {
-    log('no inst')
     await sendAuthMessage(req.body)
-    log('no inst end')
     return res.status(200).send('not exist')
   }
   // const { refId } = data
