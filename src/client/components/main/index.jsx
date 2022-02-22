@@ -167,6 +167,10 @@ export default class Options extends Component {
     return user && user.result && user.result.id
   }
 
+  redirectUrl = () => {
+    return window.location.href.replace('=auth', '')
+  }
+
   fetchUserInfo = async () => {
     this.setState({
       loadingUser: true
@@ -181,9 +185,21 @@ export default class Options extends Component {
       this.fetchWebhooks(true)
       this.fetchOrgs()
       if (window.rc.query.action === 'auth') {
+        const cont = (
+          <div>
+            <p>Now you can go back to RingCentral App, use bot command to create GitHub webhooks</p>
+            <p>
+              <span>Or</span>
+              <a
+                href={this.redirectUrl()}
+                className='mg1l'
+              >create webhook from webpage</a>
+            </p>
+          </div>
+        )
         Modal.info({
           title: 'Authorized',
-          content: 'Now you got back to RingCentral App, use bot command to create GitHub webhooks'
+          content: 'Now you can go back to RingCentral App, use bot command to create GitHub webhooks'
         })
       }
     }
@@ -418,6 +434,7 @@ export default class Options extends Component {
   }
 
   isAuthed = () => {
+    if (window.rc.query.action === 'auth')
     const {
       id
     } = this.state.user || {}

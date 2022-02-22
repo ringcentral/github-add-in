@@ -21,7 +21,10 @@ async function sendAuthMessage (body) {
   const group = {
     id: groupId
   }
-  await handleMessage(bot, group)
+  const conf = {
+    isAuth: true
+  }
+  await handleMessage(bot, group, conf)
 }
 
 export default async function action (req, res) {

@@ -216,13 +216,15 @@ export async function handleMessage (
   userId,
   message
 ) {
-  // const conf = await parseCommand(text)
-  // if (conf && !conf.error) {
-  //   await createWebhook(conf, userId, bot, group.id)
-  //   return true
-  // }
-  // const config = conf && conf.error ? { extraMessage: conf.error } : {}
-  // const msg = buildWelcomeMessage(bot, group, config)
-  const msg = buildWelcomeMessage(bot, group, {})
+  const conf = text && text.isAuth
+    ? text
+    : await parseCommand(text)
+  if (conf && !conf.error) {
+    await createWebhook(conf, userId, bot, group.id)
+    return true
+  }
+  const config = conf && conf.error ? { extraMessage: conf.error } : {}
+  const msg = buildWelcomeMessage(bot, group, config)
+  // const msg = buildWelcomeMessage(bot, group, {})
   await bot.sendAdaptiveCard(group.id, msg)
 }
