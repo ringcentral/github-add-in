@@ -45,7 +45,9 @@ export default class Options extends Component {
 
   componentDidMount () {
     this.handleEvent()
-    this.fetchUserInfo()
+    if (window.rc.query.action !== 'auth') {
+      this.fetchUserInfo()
+    }
   }
 
   track = (eventName) => {
@@ -84,7 +86,6 @@ export default class Options extends Component {
   }
 
   onAuthCallack = (e) => {
-    console.log(e)
     if (e && e.data && e.data.authDone) {
       this.fetchUserInfo()
     }
@@ -92,15 +93,15 @@ export default class Options extends Component {
   }
 
   getAuthUrl = () => {
-    return window.rc.authUrlDefault.replace(
+    const url = window.rc.authUrlDefault.replace(
       window.rc.defaultState,
       encodeURIComponent(window.rc.query.webhook)
     )
+    return url
   }
 
   handleAuth = () => {
     const url = this.getAuthUrl()
-    console.log('====', url)
     this.ref.openWindow(url)
     window.addEventListener('message', this.onAuthCallack)
   }
