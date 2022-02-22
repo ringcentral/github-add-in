@@ -193,13 +193,15 @@ export default class Options extends Component {
               <a
                 href={this.redirectUrl()}
                 className='mg1l'
-              >create webhook from webpage</a>
+              >
+                create webhook from webpage
+              </a>
             </p>
           </div>
         )
         Modal.info({
           title: 'Authorized',
-          content: 'Now you can go back to RingCentral App, use bot command to create GitHub webhooks'
+          content: cont
         })
       }
     }
@@ -434,7 +436,9 @@ export default class Options extends Component {
   }
 
   isAuthed = () => {
-    if (window.rc.query.action === 'auth')
+    if (window.rc.query.action === 'auth') {
+      return false
+    }
     const {
       id
     } = this.state.user || {}
