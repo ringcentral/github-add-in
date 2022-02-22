@@ -24,10 +24,9 @@ const types = {
 
 export function getId (user) {
   const {
-    id,
-    accountId
+    extId
   } = user
-  return `${accountId}-${id}`
+  return extId
 }
 
 async function sendAuthMessage (body) {

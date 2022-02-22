@@ -25,10 +25,10 @@ async function sendAuthMessage (body) {
 }
 
 export default async function action (req, res) {
-  const { log } = console
-  log('==========')
-  log(JSON.stringify(req.body, null, 2))
-  log('==========')
+  // const { log } = console
+  // log('==========')
+  // log(JSON.stringify(req.body, null, 2))
+  // log('==========')
   const {
     user,
     data
