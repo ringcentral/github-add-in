@@ -222,7 +222,12 @@ export async function handleMessage (
     await createWebhook(conf, userId, bot, group.id)
     return true
   }
-  const config = conf && conf.error ? { extraMessage: conf.error } : {}
+  let config = {}
+  if (conf && conf.isAuth) {
+    config = conf
+  } else if (conf && conf.error) {
+    config = { extraMessage: conf.error }
+  }
   const msg = buildWelcomeMessage(bot, group, config)
   // const msg = buildWelcomeMessage(bot, group, {})
   await bot.sendAdaptiveCard(group.id, msg)

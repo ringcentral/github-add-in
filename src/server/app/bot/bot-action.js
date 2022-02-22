@@ -24,15 +24,10 @@ async function sendAuthMessage (body) {
   const conf = {
     isAuth: true
   }
-  console.log('go to handle msg')
   await handleMessage(bot, group, conf)
 }
 
 export default async function action (req, res) {
-  const { log } = console
-  log('==========')
-  log(JSON.stringify(req.body, null, 2))
-  log('==========')
   const {
     user,
     data
