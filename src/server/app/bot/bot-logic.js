@@ -49,20 +49,19 @@ function buildWelcomeMessage (bot, group, conf = {}) {
   const pre = extraMessage
     ? `**${extraMessage}**\n\n`
     : ''
+  //   const desc = isAuth
+  //     ? parser(
+  //       'Please click **Authorize** button to authorize first before use bot command or interactive with card.')
+  //     : parser(
+  // `${pre}I am **GitHub bot**, please click the **Click to config** button below to set GitHub repo events that will be send to this chat group, I will post this message again if you post any message and **AT** me`)
+
   const desc = isAuth
     ? parser(
-      'Please click **Authorize** button to authorize first before use bot command')
+      'Please click **Authorize** button to authorize first before use bot command or interactive with card.')
     : parser(
-`${pre}I am **GitHub bot**, please click the **Click to config** button below to set GitHub repo events that will be send to this chat group, I will post this message again if you post any message and **AT** me`)
-  /*
-const desc = isAuth
-? parser(
-  'Please click **Authorize** button to authorize first before use bot command')
-: parser(
-`${pre}I am **GitHub bot**, please click the **Click to config** button below to set GitHub repo events that will be send to this chat group, I will post this message again if you post any message and **AT** me
+    `${pre}I am **GitHub bot**, please click the **Click to config** button below to set GitHub repo events that will be send to this chat group, I will post this message again if you post any message and **AT** me
 
-You can also create webhook by command: eg: \`@GitHubBot add ringcentral/test-repo issues,pull_request\`, more bot commands detail please check [Create webhook from github bot command](https://github.com/ringcentral/github-add-in/wiki/Create-webhook-from-github-bot-command)`)
-*/
+    You can also create webhook by command: eg: \`@GitHubBot add ringcentral/test-repo issues,pull_request\`, more bot commands detail please check [Create webhook from github bot command](https://github.com/ringcentral/github-add-in/wiki/Create-webhook-from-github-bot-command)`)
 
   const url = RINGCENTRAL_APP_SERVER +
     `/bot-config?groupId=${groupId}&botId=${bot.id}` +
