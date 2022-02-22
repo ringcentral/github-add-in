@@ -24,6 +24,7 @@ async function sendAuthMessage (body) {
   const conf = {
     isAuth: true
   }
+  console.log('go to handle msg')
   await handleMessage(bot, group, conf)
 }
 

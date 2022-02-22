@@ -218,7 +218,7 @@ export async function handleMessage (
   const conf = text && text.isAuth
     ? text
     : await parseCommand(text)
-  if (conf && !conf.error) {
+  if (conf && !conf.error && !conf.isAuth) {
     await createWebhook(conf, userId, bot, group.id)
     return true
   }
