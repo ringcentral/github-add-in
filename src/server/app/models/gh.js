@@ -10,7 +10,7 @@ import { Token } from './token'
 import uid from '../common/uid'
 import _ from 'lodash'
 
-export class User extends Service {}
+export const User = Service
 
 const SCOPES = 'repo read:user read:org'
 

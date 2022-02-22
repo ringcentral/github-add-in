@@ -29,6 +29,7 @@ export default async (req, res) => {
   const { id } = user
   let result
   const userInst = await User.findByPk(id).catch(console.error)
+  console.log('user inst', userInst)
   let status = 0
   if (action === 'logout') {
     result = await userInst.logout()
