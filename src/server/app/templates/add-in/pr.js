@@ -17,6 +17,7 @@ export const prTemp = `
         {{actions}}
       ]
     }
+    {{extraMessage}}
   ]
 }
 

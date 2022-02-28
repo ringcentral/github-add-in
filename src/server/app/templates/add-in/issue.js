@@ -17,6 +17,7 @@ export const issueTemp = `
         {{actions}}
       ]
     }
+    {{extraMessage}}
   ]
 }
 `

@@ -5,9 +5,12 @@
 import { RCGH } from '../models/rc-gh'
 import { User } from '../models/gh'
 import Bot from 'ringcentral-chatbot-core/dist/models/Bot'
-// import { Webhook } from '../models/webhook'
+import { CardUpdateRef } from '../models/card-update-ref'
 import { ghAction, getId } from '../handlers/add-in-action'
 import { handleMessage } from './bot-logic'
+import {
+  transform
+} from '../handlers/webhook'
 
 async function sendAuthMessage (body) {
   const {
@@ -25,6 +28,48 @@ async function sendAuthMessage (body) {
     isAuth: true
   }
   await handleMessage(bot, group, conf)
+}
+
+function buildMessage (data) {
+  return data.actionMessage || 'Action submitted'
+}
+
+function isUpdateAction (action) {
+  return [
+    'reopen-issue',
+    'close-issue',
+    'close-pr',
+    'reopen-pr'
+  ].includes(action)
+}
+
+async function tryUpdateCard (user, data) {
+  const {
+    refId,
+    action
+  } = data
+  if (!refId || !isUpdateAction(action)) {
+    return false
+  }
+  const ref = await CardUpdateRef.findByPk(refId)
+  if (!ref || !ref.data) {
+    return false
+  }
+  const bot = await Bot.findByPk(data.botId)
+  if (!bot) {
+    return false
+  }
+  const formatted = transform(
+    {
+      ...ref.data,
+      formatConfig: {
+        removeAction: true,
+        message: buildMessage(data)
+      }
+    }
+  )
+  const d = formatted.attachments[0]
+  await bot.updateAdaptiveCard(ref.cardId, d)
 }
 
 export default async function action (req, res) {
@@ -55,6 +100,7 @@ export default async function action (req, res) {
   //   return res.send('not authed')
   // }
   const u = await User.findByPk(inst.gh_id)
+  await tryUpdateCard(user, data)
   await ghAction(u, req.body)
   res.send('ok')
 }

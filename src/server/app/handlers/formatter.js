@@ -15,7 +15,8 @@ import {
   titleTempRender,
   descTempRender,
   longDescTempRender,
-  commentSetsTempRender
+  commentSetsTempRender,
+  subtitleTempRender
 } from './templates'
 import {
   GITHUB_ICON_URL,
@@ -118,6 +119,9 @@ function markdownQuote (txt) {
 }
 
 export function formIssue (body) {
+  const {
+    formatConfig = {}
+  } = body
   let url = body.issue.html_url
   let type = ''
   const isPull = /\/pull\/\d+$/.test(url)
@@ -165,7 +169,8 @@ export function formIssue (body) {
     n,
     whId: body.whId,
     botId: body.botId,
-    groupId: body.groupId
+    groupId: body.groupId,
+    refId: body.refId
   }
   const cardProps = {
     id: 'githubCommentInput1',
@@ -204,10 +209,14 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen issue',
-        action: 'reopen-issue'
+        action: 'reopen-issue',
+        actionMessage: 'Issue reopened'
       }),
       sep: ','
     }, commentAction]
+    if (formatConfig.removeAction) {
+      actions = actions.slice(1)
+    }
   } else if (action === 'deleted' || action === 'locked') {
     actions = []
   } else {
@@ -218,15 +227,25 @@ export function formIssue (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Close issue',
+        actionMessage: 'Issue closed',
         action: 'close-issue'
       }),
       sep: ','
     }, commentAction]
+    if (formatConfig.removeAction) {
+      actions = actions.slice(1)
+    }
   }
 
   ext.actions = actions
   const all = createCommonProps(body, ext)
   all.fallbackText = fallbackText
+  all.extraMessage = formatConfig.message
+    ? subtitleTempRender({
+      text: formatConfig.message,
+      hasSubtitle: true
+    })
+    : ''
   all.columnSets = columnSetsTempRender({ columns })
   all.actions = actions.length
     ? actionsTempRender({
@@ -251,6 +270,9 @@ export function formIssue (body) {
 }
 
 export function formPr (body) {
+  const {
+    formatConfig = {}
+  } = body
   let type = ''
   let url = body.pull_request.html_url
   let bodyTitle = ''
@@ -320,6 +342,7 @@ export function formPr (body) {
     whId: body.whId,
     botId: body.botId,
     groupId: body.groupId,
+    refId: body.refId,
     type: ''
   }
   const cardProps = {
@@ -360,10 +383,14 @@ export function formPr (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Reopen',
-        action: 'reopen-pr'
+        action: 'reopen-pr',
+        actionMessage: 'Pull request reopened'
       }),
       sep: ','
     }, commentAction]
+    if (formatConfig.removeAction) {
+      actions = actions.slice(1)
+    }
   } else if (action === 'deleted' || action === 'locked') {
     actions = []
   } else {
@@ -374,11 +401,15 @@ export function formPr (body) {
         ...commonData,
         ...commonEventData,
         actionTitle: 'Close',
+        actionMessage: 'Pull request closed',
         action: 'close-pr'
       }),
       sep: ','
     },
     commentAction]
+    if (formatConfig.removeAction) {
+      actions = actions.slice(1)
+    }
   }
   ext.actions = actions
   const all = createCommonProps(body, ext)
@@ -387,6 +418,12 @@ export function formPr (body) {
     actions,
     hasActions: !!actions.length
   })
+  all.extraMessage = formatConfig.message
+    ? subtitleTempRender({
+      text: formatConfig.message,
+      hasSubtitle: true
+    })
+    : ''
   all.fallbackText = fallbackText
   const str = body.comment || body.review
     ? commentTempRender(all)

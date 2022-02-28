@@ -18,6 +18,7 @@ import { authTemp } from '../templates/add-in/auth'
 import { messageTemp } from '../templates/add-in/message'
 import { commentSetsTemp } from '../templates/parts/comment-sets'
 import { botJoinTemp } from '../templates/bot/bot-join'
+import { subtitleTemp } from '../templates/parts/subtitle'
 
 import temp from 'handlebars'
 
@@ -41,3 +42,4 @@ export const authTempRender = temp.compile(authTemp, { noEscape: true })
 export const messageTempRender = temp.compile(messageTemp, { noEscape: true })
 export const commentSetsTempRender = temp.compile(commentSetsTemp, { noEscape: true })
 export const botJoinTempRender = temp.compile(botJoinTemp, { noEscape: true })
+export const subtitleTempRender = temp.compile(subtitleTemp, { noEscape: true })

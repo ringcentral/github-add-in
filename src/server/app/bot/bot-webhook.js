@@ -9,7 +9,7 @@ import {
   transform
 } from '../handlers/webhook'
 import axios from 'axios'
-import { cardUpdateExpire } from '../common/constants'
+// import { cardUpdateExpire } from '../common/constants'
 
 export const repositoryEventProps = [
   'action',
@@ -57,7 +57,7 @@ export async function prepareUpdateCard (data, result, botId) {
   if (!isActionCanUpdate(data)) {
     return false
   }
-  const id = createUid(data)
+  const id = data.refId
   /* issue events
   - opened
   - edited
@@ -98,7 +98,8 @@ export async function prepareUpdateCard (data, result, botId) {
   const up = {
     id,
     botId,
-    cardId: result.id
+    cardId: result.id,
+    data
   }
   await CardUpdateRef.create(up)
 }
@@ -112,30 +113,30 @@ function createUid (data) {
   return `${type}-${whId}-${id}`
 }
 
-function cardUpdateExpired (ref) {
-  return Date.now() - new Date(ref.updatedAt).getTime() > cardUpdateExpire
-}
+// function cardUpdateExpired (ref) {
+//   return Date.now() - new Date(ref.updatedAt).getTime() > cardUpdateExpire
+// }
 
-async function tryUpdateCard (dataToTrans, data, bot) {
-  if (!isActionCanUpdate(dataToTrans)) {
-    return false
-  }
-  const id = createUid(dataToTrans)
-  const ref = await CardUpdateRef.findByPk(id)
-  if (!ref) {
-    return false
-  }
-  if (cardUpdateExpired(ref)) {
-    await CardUpdateRef.destroy({
-      where: {
-        id
-      }
-    })
-    return false
-  }
-  await bot.updateAdaptiveCard(ref.cardId, data)
-  return true
-}
+// async function tryUpdateCard (dataToTrans, data, bot) {
+//   if (!isActionCanUpdate(dataToTrans)) {
+//     return false
+//   }
+//   const id = createUid(dataToTrans)
+//   const ref = await CardUpdateRef.findByPk(id)
+//   if (!ref) {
+//     return false
+//   }
+//   if (cardUpdateExpired(ref)) {
+//     await CardUpdateRef.destroy({
+//       where: {
+//         id
+//       }
+//     })
+//     return false
+//   }
+//   await bot.updateAdaptiveCard(ref.cardId, data)
+//   return true
+// }
 
 export default async function webhook2 (req, res) {
   const {
@@ -164,6 +165,7 @@ export default async function webhook2 (req, res) {
     botId: wh.bot_id,
     groupId: wh.group_id
   }
+  dataToTrans.refId = createUid(dataToTrans)
   const data = transform(dataToTrans)
   // console.log('-----')
   // console.log(JSON.stringify(data, null, 2))
@@ -173,11 +175,13 @@ export default async function webhook2 (req, res) {
     res.send('skip')
     return 'skip'
   }
-  const updateCard = await tryUpdateCard(dataToTrans, d, bot)
-  if (!updateCard) {
-    const card = await bot.sendAdaptiveCard(wh.group_id, d)
-    await prepareUpdateCard(dataToTrans, card, bot.id)
-  }
+  // const updateCard = await tryUpdateCard(dataToTrans, d, bot)
+  // if (!updateCard) {
+  //   const card = await bot.sendAdaptiveCard(wh.group_id, d)
+  //   await prepareUpdateCard(dataToTrans, card, bot.id)
+  // }
+  const card = await bot.sendAdaptiveCard(wh.group_id, d)
+  await prepareUpdateCard(dataToTrans, card, bot.id)
   // console.log('webhook', wh.rc_webhook, r.data)
   /*
   x {
