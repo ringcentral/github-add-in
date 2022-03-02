@@ -39,8 +39,12 @@ export default function Main (props) {
     beta,
     showEditWebhook,
     webhookEdit,
-    loading
+    loading,
+    renderFooter
   } = props
+  const cls = window.rc.isBot
+    ? 'main-wrap is-bot'
+    : 'main-wrap'
   if (showList) {
     const listProps = {
       updateWebhook: props.updateWebhook,
@@ -55,7 +59,9 @@ export default function Main (props) {
       loading,
       filterWebhook,
       handleSwitchFilter,
-      switchWebhookList
+      switchWebhookList,
+      renderFooter,
+      cls
     }
     return (
       <List
@@ -92,9 +98,7 @@ export default function Main (props) {
     )
   }
   const disabled = !selectedEvents.length
-  const cls = window.rc.isBot
-    ? 'main-wrap is-bot'
-    : 'main-wrap'
+
   return (
     <div className={cls}>
       <div className='steps-head'>
@@ -141,6 +145,7 @@ export default function Main (props) {
           </span>
         </div>
       </div>
+      {renderFooter()}
     </div>
   )
 }

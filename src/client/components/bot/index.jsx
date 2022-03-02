@@ -1,4 +1,5 @@
 import Index from '../main/index'
+import Footer from './footer'
 
 export default class Bot extends Index {
   isBot = true
@@ -15,6 +16,10 @@ export default class Bot extends Index {
 
   isUserAuthed = user => {
     return user && user.result && user.result.id && user.result.rc_id
+  }
+
+  renderFooter = () => {
+    return <Footer />
   }
 
   isAuthed = () => {

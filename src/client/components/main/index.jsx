@@ -446,6 +446,8 @@ export default class Options extends Component {
     return !!id
   }
 
+  renderFooter = () => null
+
   render () {
     const { state } = this
     const loading = state.loadingOrgs || state.loadingRepos || state.loadingWebhooks || state.submitting || state.loadingUser
@@ -464,7 +466,8 @@ export default class Options extends Component {
       'switchWebhookList',
       'delWebhook',
       'handleSwitchFilter',
-      'logout'
+      'logout',
+      'renderFooter'
     ])
     if (this.isAuthed()) {
       return (

@@ -100,7 +100,7 @@ export default function WebhookList (props) {
     ? props.webhooks
     : props.webhooks.filter(filter)
   return (
-    <div className='webhook-list main-wrap'>
+    <div className={props.cls + ' webhook-list'}>
       <div className='main-content'>
         <div className='pd2 bold font16 fix'>
           <span className='iblock mg3r'>Webhook List</span>
@@ -132,6 +132,9 @@ export default function WebhookList (props) {
       <WebhookEdit
         {...listProps}
       />
+      <div>
+        {props.renderFooter()}
+      </div>
     </div>
   )
 }
