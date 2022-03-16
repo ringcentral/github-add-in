@@ -41,7 +41,10 @@ const base = {
 base._global = copy(base)
 
 export const data = base
-export const FEEDBACK_URL = 'https://github.com/ringcentral/github-notification-app/issues/new'
+
+const url = encodeURIComponent('https://github.com/ringcentral/github-notification-app/issues/new')
+export const FEEDBACK_URL = `https://ringcentral.github.io/common-redirect?redirect=${url}&appName=github-add-in`
+
 export const GITHUB_ICON_URL = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
 
 const baseURL = (name) => {

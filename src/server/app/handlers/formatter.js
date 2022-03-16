@@ -28,7 +28,7 @@ import copy from 'json-deep-copy'
 import _ from 'lodash'
 
 const commonEventData = {
-  // activity: 'GitHub',
+  activity: 'GitHub Add-in',
   icon: GITHUB_ICON_URL
 }
 const MAX_LINES = 5
