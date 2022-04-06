@@ -105,6 +105,9 @@ export async function prepareUpdateCard (data, result, botId) {
 }
 
 function createUid (data) {
+  if (!data.issue && !data.pull_request) {
+    return ''
+  }
   const id = data.issue.id || data.pull_request.id
   const type = data.issue ? 'issue' : 'pull_request'
   const {
