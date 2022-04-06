@@ -18,7 +18,7 @@
     "clean": "node cmds/clean.js",
     "build-lambda": "npm run clean && node cmds/build && npm run view",
     "deploy-lambda": "node cmds/deploy",
-    "watch": "cd deploy && ../node_modules/.bin/sls logs -f app -t",
+    "watch": "cd serverless-deploy && ../node_modules/.bin/sls logs -f app -t",
     "lint": "./node_modules/.bin/standard",
     "fix": "./node_modules/.bin/standard --fix",
     "dynamo": "node -r @babel/register -r dotenv/config cmds/dynamo-local"
