@@ -13,6 +13,7 @@ import {
   formAct,
   formCommon
 } from './formatter'
+import { User } from '../models/gh'
 import axios from 'axios'
 import _ from 'lodash'
 
@@ -110,6 +111,47 @@ export function transform (body) {
   }
 }
 
+function webhookRemoved (err) {
+  const str = JSON.stringify(err || {}).toLowerCase()
+  return str.includes('webhook not found')
+}
+
+async function delWebhook (wh) {
+  const {
+    id,
+    gh_user_id: uid,
+    gh_repo: repo,
+    gh_webhook_id: wid,
+    gh_org: org
+  } = wh
+  const user = await User.findByPk(uid)
+  const url = `/repos/${org.login}/${repo.name}/hooks/${wid}`
+  await user.gh.request({
+    method: 'DELETE',
+    url
+  }).catch(err => {
+    console.error('delete webhook error', url)
+    return err
+  })
+  const str = (user.webhooks || '')
+    .split(',')
+    .filter(d => d)
+    .filter(d => d !== id)
+    .join(',')
+  await User.update({
+    webhooks: str
+  }, {
+    where: {
+      id: user.id
+    }
+  })
+  await Webhook.destroy({
+    where: {
+      id
+    }
+  })
+}
+
 export default async function webhook2 (req, res) {
   const {
     id
@@ -139,6 +181,13 @@ export default async function webhook2 (req, res) {
   }
   // console.log('webhook', wh.rc_webhook, r.data)
   const x = await postMessage(wh.rc_webhook, data)
-  console.log('x', x)
+    .catch(e => {
+      console.log('post webhook err', wh.rc_webhook)
+      console.log(e)
+    })
+  if (webhookRemoved(x)) {
+    console.log('webhookRemoved', wh.id, wh.rc_webhook)
+    await delWebhook(wh)
+  }
   res.send(x)
 }
